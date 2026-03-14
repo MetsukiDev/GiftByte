@@ -1,0 +1,59 @@
+# ========================
+# Backend (Python / FastAPI)
+# ========================
+
+# Виртуальное окружение
+backend/venv/
+backend/__pycache__/
+backend/*.pyc
+backend/*.pyo
+backend/*.pyd
+
+# Секреты
+backend/.env
+
+# Логи
+backend/logs/
+backend/*.log
+
+# SQLite база (если случайно создашь локально)
+backend/*.db
+
+# ========================
+# Frontend (React / Next.js)
+# ========================
+
+# Node modules
+frontend/node_modules/
+
+# Next.js билд
+frontend/.next/
+frontend/out/
+
+# Локальные env файлы
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.production.local
+
+# Логи
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+
+# ========================
+# OS / IDE
+# ========================
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Visual Studio Code
+.vscode/
+
+# JetBrains IDEs
+.idea/

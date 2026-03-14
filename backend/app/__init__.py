@@ -1,0 +1,1 @@
+"""GiftByte backend application."""
