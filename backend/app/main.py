@@ -1,67 +1,60 @@
-"""GiftByte API — cyberpunk wishlist platform.
+"""GiftByte API — cyberpunk wishlist platform MVP backend.
 
-Fixes applied for "Application startup failed":
-- Import routes from app.routes (not app.routers) to match project structure.
-- All models are imported so Base.metadata.create_all() creates every table.
-- Lifespan wraps create_all in try/except; optional SKIP_DB_INIT=1 lets server start without DB.
-- Config loads .env via python-dotenv (UTF-8) so DATABASE_URL is set correctly.
+Structure:
+- core/        config, database, security
+- models/      SQLAlchemy models
+- schemas/     Pydantic request/response models
+- api/         FastAPI routers (HTTP + WebSocket)
+- services/    Business logic and permission checks
 """
 
 import logging
-import os
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
-from app.database import Base, engine
-# Import all models so they are registered with Base before create_all()
-from app.models import (
-    User,
-    Event,
-    Gift,
-    Reservation,
-    Contribution,
-    Wallet,
-    Transaction,
-)
-from app.routes import users, events, gifts, contributions
+from app.core.config import get_settings
+from app.core.database import Base, engine
+from app.api import auth, users, wishlists, gifts, wallet, ws
+from app.models import *  # noqa: F401,F403  (needed so Base.metadata sees all models)
 
+
+settings = get_settings()
 logger = logging.getLogger(__name__)
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """Create SQLAlchemy tables on startup. Safe session handling is via get_db() in routes."""
-    if os.environ.get("SKIP_DB_INIT") == "1":
-        logger.warning("SKIP_DB_INIT=1: skipping table creation. Set DATABASE_URL and restart without it for DB.")
-        yield
-        return
-    try:
-        Base.metadata.create_all(bind=engine)
-        logger.info("Database tables created or already exist.")
-    except Exception as e:
-        logger.exception("Database startup failed.")
-        # Avoid embedding exception message (can contain non-UTF-8 bytes on Windows and break startup)
-        raise RuntimeError(
-            "Database startup failed. Check DATABASE_URL in .env (save .env as UTF-8) and that PostgreSQL is running."
-        )
+    """Create SQLAlchemy tables on startup."""
+    Base.metadata.create_all(bind=engine)
+    logger.info("Database tables created or already exist.")
     yield
 
 
 app = FastAPI(
-    title="GiftByte",
+    title=settings.app_name,
     description="Cyberpunk themed wishlist platform",
     version="0.1.0",
     lifespan=lifespan,
 )
 
-# Include all route modules (users, events, gifts, contributions)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=settings.cors_origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+app.include_router(auth.router)
 app.include_router(users.router)
-app.include_router(events.router)
+app.include_router(wishlists.router)
 app.include_router(gifts.router)
-app.include_router(contributions.router)
+app.include_router(wallet.router)
+app.include_router(ws.router)
 
 
 @app.get("/")
 def root():
-    return {"app": "GiftByte", "docs": "/docs"}
+    return {"app": settings.app_name, "docs": "/docs"}
