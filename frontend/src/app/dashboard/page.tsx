@@ -7,15 +7,6 @@ import { fetchCurrentUser, type User } from "@/lib/auth";
 import Sidebar from "@/components/Sidebar";
 
 // Minimal cyber SVG icons
-const IconGrid = () => (
-  <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
-    <rect x="1" y="1" width="6" height="6" rx="1" stroke="currentColor" strokeWidth="1.2" />
-    <rect x="11" y="1" width="6" height="6" rx="1" stroke="currentColor" strokeWidth="1.2" />
-    <rect x="1" y="11" width="6" height="6" rx="1" stroke="currentColor" strokeWidth="1.2" />
-    <rect x="11" y="11" width="6" height="6" rx="1" stroke="currentColor" strokeWidth="1.2" />
-  </svg>
-);
-
 const IconList = () => (
   <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
     <line x1="5" y1="5" x2="16" y2="5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
@@ -110,14 +101,6 @@ const QUICK_ACTIONS: QuickAction[] = [
     accentColor: "text-sky-300",
     cardAccent: "card-action--sky",
   },
-  {
-    label: "Wishlist Grid",
-    desc: "Browse all your wishlists at a glance.",
-    href: "/wishlists",
-    Icon: IconGrid,
-    accentColor: "text-violet-300",
-    cardAccent: "card-action--violet",
-  },
 ];
 
 export default function DashboardPage() {
@@ -192,29 +175,52 @@ export default function DashboardPage() {
             ))}
           </div>
 
-          {/* Account panel */}
-          {user && (
-            <div className="card-holo max-w-sm px-5 py-4">
-              <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.22em] text-cyan-400/55">
-                Account
-              </p>
-              <div className="flex items-center gap-4">
-                <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full border border-cyan-400/40 bg-slate-900 text-sm font-bold text-cyan-200 shadow-[0_0_16px_rgba(34,211,238,0.3)]">
-                  {user.nickname?.[0]?.toUpperCase() ?? "?"}
+          {/* Bottom row: account + quick tips */}
+          <div className="grid gap-4 sm:grid-cols-2 max-w-2xl">
+            {/* Account panel */}
+            {user && (
+              <div className="card-holo px-5 py-4">
+                <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.22em] text-cyan-400/55">
+                  Account
+                </p>
+                <div className="flex items-center gap-4">
+                  <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full border border-cyan-400/40 bg-slate-900 text-sm font-bold text-cyan-200 shadow-[0_0_16px_rgba(34,211,238,0.3)]">
+                    {user.nickname?.[0]?.toUpperCase() ?? "?"}
+                  </div>
+                  <dl className="space-y-0.5 text-xs min-w-0">
+                    <div className="flex gap-2">
+                      <dt className="text-[10px] uppercase tracking-[0.16em] text-cyan-300/50 w-14 shrink-0">Handle</dt>
+                      <dd className="text-sky-100 truncate">{user.nickname}</dd>
+                    </div>
+                    <div className="flex gap-2">
+                      <dt className="text-[10px] uppercase tracking-[0.16em] text-cyan-300/50 w-14 shrink-0">Email</dt>
+                      <dd className="text-sky-100/70 truncate">{user.email}</dd>
+                    </div>
+                  </dl>
                 </div>
-                <dl className="space-y-0.5 text-xs min-w-0">
-                  <div className="flex gap-2">
-                    <dt className="text-[10px] uppercase tracking-[0.16em] text-cyan-300/50 w-14 shrink-0">Handle</dt>
-                    <dd className="text-sky-100 truncate">{user.nickname}</dd>
-                  </div>
-                  <div className="flex gap-2">
-                    <dt className="text-[10px] uppercase tracking-[0.16em] text-cyan-300/50 w-14 shrink-0">Email</dt>
-                    <dd className="text-sky-100/70 truncate">{user.email}</dd>
-                  </div>
-                </dl>
               </div>
+            )}
+
+            {/* Quick tips */}
+            <div className="card-holo px-5 py-4">
+              <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.22em] text-cyan-400/55">
+                Quick start
+              </p>
+              <ol className="space-y-2 text-[11px] text-sky-200/55 list-none">
+                {[
+                  "Create a wishlist for your celebration",
+                  "Add gifts — single or group-funded",
+                  "Publish and share the link with friends",
+                  "Track reservations and contributions",
+                ].map((tip, i) => (
+                  <li key={i} className="flex items-start gap-2">
+                    <span className="shrink-0 text-[10px] font-bold text-cyan-400/40 mt-0.5">{i + 1}.</span>
+                    <span>{tip}</span>
+                  </li>
+                ))}
+              </ol>
             </div>
-          )}
+          </div>
         </div>
       </main>
     </div>

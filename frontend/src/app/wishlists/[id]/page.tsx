@@ -124,7 +124,7 @@ export default function WishlistDetailPage() {
     }
   }
 
-  async function handleAddGift(e: React.FormEvent<HTMLFormElement>) {
+  async function handleAddGift(e: React.SyntheticEvent<HTMLFormElement>) {
     e.preventDefault();
     setAddError(null); setAdding(true);
     const token = getToken();
@@ -305,7 +305,13 @@ export default function WishlistDetailPage() {
               </h2>
               {gifts.length === 0 ? (
                 <div className="empty-state py-10">
-                  <span className="empty-state-icon">🎀</span>
+                  <svg width="28" height="28" viewBox="0 0 28 28" fill="none" className="empty-state-icon" aria-hidden="true">
+                    <rect x="3" y="10" width="22" height="15" rx="1.5" stroke="currentColor" strokeWidth="1.4"/>
+                    <path d="M14 10V25" stroke="currentColor" strokeWidth="1.4"/>
+                    <path d="M3 16h22" stroke="currentColor" strokeWidth="1.4"/>
+                    <path d="M14 10c0 0-3.5-5 0-7s3.5 7 0 7z" stroke="currentColor" strokeWidth="1.4"/>
+                    <path d="M14 10c0 0 3.5-5 0-7s-3.5 7 0 7z" stroke="currentColor" strokeWidth="1.4"/>
+                  </svg>
                   <p className="empty-state-title">No gifts yet</p>
                   <p className="empty-state-body">Add your first gift using the form on the left.</p>
                 </div>
@@ -352,7 +358,7 @@ export default function WishlistDetailPage() {
                                 )}
                               </div>
                               {progress != null && (
-                                <div className="h-1.5 w-full rounded-full bg-slate-800">
+                                <div className="progress-track h-1.5 w-full rounded-full">
                                   <div
                                     className="progress-bar-fill h-1.5 rounded-full bg-gradient-to-r from-cyan-400 to-fuchsia-400"
                                     style={{ width: `${Math.min(progress * 100, 100).toFixed(1)}%` }}

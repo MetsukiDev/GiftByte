@@ -4,6 +4,7 @@ from app.models.user import User
 from app.models.wishlist import Wishlist
 from app.models.gift import Gift, GiftReservation, GiftContribution
 from app.models.wallet import Wallet, Transaction
+from app.models.follow import WishlistFollow
 
 __all__ = [
     "User",
@@ -13,5 +14,6 @@ __all__ = [
     "GiftContribution",
     "Wallet",
     "Transaction",
+    "WishlistFollow",
 ]
 

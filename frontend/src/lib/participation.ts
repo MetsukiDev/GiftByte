@@ -8,10 +8,10 @@ export type ParticipationItem = {
   wishlist_id: string;
   wishlist_title: string;
   wishlist_slug: string | null;
-  gift_id: string;
-  gift_title: string;
-  gift_status: string;
-  participation_type: "reserved" | "contributed";
+  gift_id: string | null;
+  gift_title: string | null;
+  gift_status: string | null;
+  participation_type: "reserved" | "contributed" | "followed";
   amount?: number | null;
 };
 
@@ -19,6 +19,7 @@ export async function fetchMyParticipation(
   token: string | null,
 ): Promise<ParticipationItem[]> {
   if (!API_URL) throw new Error("API URL is not configured.");
+  if (!token) throw new Error("Not authenticated.");
   const res = await fetch(`${API_URL}/participation/me`, {
     headers: {
       "Content-Type": "application/json",

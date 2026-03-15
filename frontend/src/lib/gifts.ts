@@ -140,11 +140,14 @@ export async function deleteGift(
 export async function reserveGift(
   giftId: string,
   guestName?: string,
+  token?: string | null,
 ): Promise<void> {
   if (!API_URL) throw new Error("API URL is not configured.");
+  const headers: Record<string, string> = { "Content-Type": "application/json" };
+  if (token) headers["Authorization"] = `Bearer ${token}`;
   const res = await fetch(`${API_URL}/public/gifts/${giftId}/reserve`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers,
     body: JSON.stringify({ guest_name: guestName ?? null }),
   });
   if (!res.ok) {
@@ -158,11 +161,14 @@ export async function contributeToGift(
   giftId: string,
   amount: number,
   guestName?: string,
+  token?: string | null,
 ): Promise<void> {
   if (!API_URL) throw new Error("API URL is not configured.");
+  const headers: Record<string, string> = { "Content-Type": "application/json" };
+  if (token) headers["Authorization"] = `Bearer ${token}`;
   const res = await fetch(`${API_URL}/public/gifts/${giftId}/contribute`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers,
     body: JSON.stringify({ amount, guest_name: guestName ?? null }),
   });
   if (!res.ok) {

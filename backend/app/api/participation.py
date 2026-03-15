@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 from app.api.deps import DbSession, get_current_user
-from app.models import Gift, GiftReservation, GiftContribution, Wishlist
+from app.models import Gift, GiftReservation, GiftContribution, Wishlist, WishlistFollow
 from app.schemas.participation import ParticipationItem
 
 router = APIRouter(prefix="/participation", tags=["participation"])
@@ -92,6 +92,34 @@ def get_my_participation(
                 gift_status=gift.status,
                 participation_type="contributed",
                 amount=total,
+            )
+        )
+
+    # Followed wishlists — one entry per wishlist (no gift_id)
+    follows = (
+        db.query(WishlistFollow)
+        .filter(WishlistFollow.user_id == current_user.id)
+        .all()
+    )
+    for follow in follows:
+        wishlist = db.get(Wishlist, follow.wishlist_id)
+        if wishlist is None or wishlist.status == "archived":
+            continue
+        slug = (
+            wishlist.public_slug
+            if wishlist.is_public and wishlist.status == "published"
+            else None
+        )
+        items.append(
+            ParticipationItem(
+                wishlist_id=wishlist.id,
+                wishlist_title=wishlist.title,
+                wishlist_slug=slug,
+                gift_id=None,
+                gift_title=None,
+                gift_status=None,
+                participation_type="followed",
+                amount=None,
             )
         )
 
