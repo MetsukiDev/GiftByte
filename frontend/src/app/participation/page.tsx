@@ -54,7 +54,12 @@ export default function ParticipationPage() {
           <div className="mt-6">
             {items.length === 0 ? (
               <div className="empty-state">
-                <span className="empty-state-icon">🎁</span>
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none" className="empty-state-icon" aria-hidden="true">
+                  <circle cx="12" cy="10" r="5" stroke="currentColor" strokeWidth="1.5"/>
+                  <path d="M2 28c0-5.523 4.477-9 10-9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                  <circle cx="23" cy="12" r="4" stroke="currentColor" strokeWidth="1.5"/>
+                  <path d="M23 20c4 0 7 2.5 7 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                </svg>
                 <p className="empty-state-title">No participation yet</p>
                 <p className="empty-state-body">
                   You haven&apos;t reserved or contributed to any gifts yet. Share a friend&apos;s wishlist link to get started.
@@ -62,39 +67,47 @@ export default function ParticipationPage() {
               </div>
             ) : (
               <div className="max-w-2xl space-y-3">
-                {items.map((item) => (
-                  <div
-                    key={`${item.participation_type}-${item.gift_id}`}
-                    className="card-holo card-holo-hover flex flex-col gap-2 px-4 py-3 text-xs"
-                  >
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="text-sm font-semibold text-sky-100 truncate">{item.gift_title}</span>
-                      <div className="flex shrink-0 gap-1">
-                        <StatusBadge status={item.participation_type} />
-                        <StatusBadge status={item.gift_status} />
+                {items.map((item) => {
+                  const typeColor =
+                    item.participation_type === "contributed"
+                      ? "border-l-indigo-400/60"
+                      : item.participation_type === "followed"
+                      ? "border-l-cyan-400/60"
+                      : "border-l-amber-400/60";
+                  return (
+                    <div
+                      key={`${item.participation_type}-${item.gift_id}`}
+                      className={`card-holo card-action flex flex-col gap-2 px-4 py-3 text-xs border-l-2 ${typeColor}`}
+                    >
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="text-sm font-semibold text-sky-100 truncate">{item.gift_title}</span>
+                        <div className="flex shrink-0 gap-1">
+                          <StatusBadge status={item.participation_type} />
+                          <StatusBadge status={item.gift_status} />
+                        </div>
                       </div>
-                    </div>
-                    <span className="text-[11px] text-sky-300/60">
-                      Wishlist: {item.wishlist_title}
-                    </span>
-                    {item.participation_type === "contributed" && item.amount != null && (
-                      <span className="text-[11px] text-cyan-300/80">
-                        Your total contribution: {Number(item.amount).toFixed(2)}
+                      <span className="text-[11px] text-sky-300/60">
+                        Wishlist: {item.wishlist_title}
                       </span>
-                    )}
-                    {item.wishlist_slug ? (
-                      <button
-                        type="button"
-                        onClick={() => router.push(`/public/${item.wishlist_slug}`)}
-                        className="mt-1 self-start text-[10px] font-medium text-cyan-400 underline-offset-2 hover:underline"
-                      >
-                        View wishlist ↗
-                      </button>
-                    ) : (
-                      <span className="mt-1 text-[10px] text-sky-400/40">Wishlist no longer publicly available</span>
-                    )}
-                  </div>
-                ))}
+                      {item.participation_type === "contributed" && item.amount != null && (
+                        <span className="text-[11px] text-cyan-300/80">
+                          Your total contribution: {Number(item.amount).toFixed(2)}
+                        </span>
+                      )}
+                      {item.wishlist_slug ? (
+                        <button
+                          type="button"
+                          onClick={() => router.push(`/public/${item.wishlist_slug}`)}
+                          className="mt-1 self-start text-[10px] font-medium text-cyan-400 underline-offset-2 hover:underline"
+                        >
+                          View wishlist ↗
+                        </button>
+                      ) : (
+                        <span className="mt-1 text-[10px] text-sky-400/40">Wishlist no longer publicly available</span>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             )}
           </div>

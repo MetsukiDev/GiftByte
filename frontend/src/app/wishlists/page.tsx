@@ -69,7 +69,12 @@ export default function WishlistsPage() {
 
           {wishlists.length === 0 ? (
             <div className="empty-state max-w-md">
-              <span className="empty-state-icon">🎁</span>
+              <svg width="32" height="32" viewBox="0 0 32 32" fill="none" className="empty-state-icon" aria-hidden="true">
+                <rect x="4" y="8" width="24" height="20" rx="2" stroke="currentColor" strokeWidth="1.5"/>
+                <path d="M11 8V6a5 5 0 0110 0v2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                <line x1="10" y1="16" x2="22" y2="16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                <line x1="10" y1="21" x2="18" y2="21" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+              </svg>
               <p className="empty-state-title">No wishlists yet</p>
               <p className="empty-state-body">
                 Create your first wishlist for an upcoming birthday, wedding, or any celebration.
@@ -84,31 +89,38 @@ export default function WishlistsPage() {
             </div>
           ) : (
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {wishlists.map((wl) => (
-                <button
-                  key={wl.id}
-                  type="button"
-                  onClick={() => router.push(`/wishlists/${wl.id}`)}
-                  className="card-holo card-holo-hover flex flex-col items-start border border-cyan-500/25 p-4 text-left"
-                >
-                  <div className="mb-1.5 text-sm font-semibold text-sky-50 leading-snug">
-                    {wl.title}
-                  </div>
-                  {wl.description && (
-                    <p className="mb-3 line-clamp-2 text-[11px] leading-relaxed text-sky-200/55">
-                      {wl.description}
-                    </p>
-                  )}
-                  <div className="mt-auto flex w-full items-center justify-between gap-2">
-                    <span className="text-[10px] text-sky-300/50">
-                      {wl.event_date
-                        ? new Date(wl.event_date).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })
-                        : "No event date"}
-                    </span>
-                    <StatusBadge status={wl.status} />
-                  </div>
-                </button>
-              ))}
+              {wishlists.map((wl) => {
+                const stripClass =
+                  wl.status === "published" ? "wishlist-card-strip--published"
+                  : wl.status === "archived" ? "wishlist-card-strip--archived"
+                  : "wishlist-card-strip--draft";
+                return (
+                  <button
+                    key={wl.id}
+                    type="button"
+                    onClick={() => router.push(`/wishlists/${wl.id}`)}
+                    className="card-holo card-holo-hover relative flex flex-col items-start border border-cyan-500/25 p-4 pt-5 text-left"
+                  >
+                    <div className={`wishlist-card-strip ${stripClass}`} />
+                    <div className="mb-1.5 text-sm font-semibold text-sky-50 leading-snug">
+                      {wl.title}
+                    </div>
+                    {wl.description && (
+                      <p className="mb-3 line-clamp-2 text-[11px] leading-relaxed text-sky-200/55">
+                        {wl.description}
+                      </p>
+                    )}
+                    <div className="mt-auto flex w-full items-center justify-between gap-2">
+                      <span className="text-[10px] text-sky-300/50">
+                        {wl.event_date
+                          ? new Date(wl.event_date).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })
+                          : "No event date"}
+                      </span>
+                      <StatusBadge status={wl.status} />
+                    </div>
+                  </button>
+                );
+              })}
             </div>
           )}
         </div>

@@ -66,7 +66,7 @@ type QuickAction = {
   href: string;
   Icon: () => React.ReactElement;
   accentColor: string;
-  borderColor: string;
+  cardAccent: string;
 };
 
 const QUICK_ACTIONS: QuickAction[] = [
@@ -76,7 +76,7 @@ const QUICK_ACTIONS: QuickAction[] = [
     href: "/wishlists/create",
     Icon: IconPlus,
     accentColor: "text-cyan-300",
-    borderColor: "hover:border-cyan-400/50",
+    cardAccent: "card-action--cyan",
   },
   {
     label: "My Wishlists",
@@ -84,7 +84,7 @@ const QUICK_ACTIONS: QuickAction[] = [
     href: "/wishlists",
     Icon: IconList,
     accentColor: "text-indigo-300",
-    borderColor: "hover:border-indigo-400/50",
+    cardAccent: "card-action--indigo",
   },
   {
     label: "Participation",
@@ -92,7 +92,7 @@ const QUICK_ACTIONS: QuickAction[] = [
     href: "/participation",
     Icon: IconUsers,
     accentColor: "text-fuchsia-300",
-    borderColor: "hover:border-fuchsia-400/50",
+    cardAccent: "card-action--fuchsia",
   },
   {
     label: "Wallet",
@@ -100,7 +100,7 @@ const QUICK_ACTIONS: QuickAction[] = [
     href: "/wallet",
     Icon: IconWallet,
     accentColor: "text-emerald-300",
-    borderColor: "hover:border-emerald-400/50",
+    cardAccent: "card-action--emerald",
   },
   {
     label: "Profile",
@@ -108,7 +108,7 @@ const QUICK_ACTIONS: QuickAction[] = [
     href: "/profile",
     Icon: IconPerson,
     accentColor: "text-sky-300",
-    borderColor: "hover:border-sky-400/50",
+    cardAccent: "card-action--sky",
   },
   {
     label: "Wishlist Grid",
@@ -116,7 +116,7 @@ const QUICK_ACTIONS: QuickAction[] = [
     href: "/wishlists",
     Icon: IconGrid,
     accentColor: "text-violet-300",
-    borderColor: "hover:border-violet-400/50",
+    cardAccent: "card-action--violet",
   },
 ];
 
@@ -179,7 +179,7 @@ export default function DashboardPage() {
                 key={action.label + action.href}
                 type="button"
                 onClick={() => router.push(action.href)}
-                className={`card-holo card-holo-hover group flex flex-col gap-3 border border-slate-700/50 px-5 py-4 text-left ${action.borderColor} transition-all`}
+                className={`card-holo card-action ${action.cardAccent} group flex flex-col gap-3 border border-slate-700/50 px-5 py-4 text-left`}
               >
                 <div className={`${action.accentColor} transition-colors`}>
                   <action.Icon />

@@ -10,6 +10,7 @@ const STATUS_CLASS: Record<string, string> = {
   published: "badge-published",
   archived: "badge-archived",
   contributed: "badge-funding",
+  followed: "badge-followed",
   single: "badge-neon",
   group: "badge-neon",
 };

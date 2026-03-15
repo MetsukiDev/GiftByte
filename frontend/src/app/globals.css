@@ -374,13 +374,13 @@ body {
 
 .pixel-drone--1 {
   top: 22%;
-  left: 38%;
+  left: 10%;
   animation: drone-bob-1 7s ease-in-out infinite;
 }
 
 .pixel-drone--2 {
   top: 30%;
-  left: 55%;
+  left: 22%;
   animation: drone-bob-2 9s ease-in-out infinite;
   animation-delay: -3s;
   transform: scale(0.8);
@@ -416,7 +416,7 @@ body {
   background: radial-gradient(circle, rgba(34, 211, 238, 0.9) 0%, rgba(34, 211, 238, 0.1) 70%, transparent 100%);
   box-shadow: 0 0 16px rgba(34, 211, 238, 0.7), 0 0 32px rgba(34, 211, 238, 0.3);
   top: 28%;
-  left: 32%;
+  left: 8%;
   animation-delay: 0s;
 }
 
@@ -426,7 +426,7 @@ body {
   background: radial-gradient(circle, rgba(244, 114, 182, 0.9) 0%, rgba(244, 114, 182, 0.1) 70%, transparent 100%);
   box-shadow: 0 0 12px rgba(244, 114, 182, 0.7), 0 0 24px rgba(244, 114, 182, 0.3);
   top: 20%;
-  left: 28%;
+  left: 5%;
   animation-delay: -1.3s;
 }
 
@@ -436,7 +436,7 @@ body {
   background: radial-gradient(circle, rgba(167, 139, 250, 0.9) 0%, rgba(167, 139, 250, 0.1) 70%, transparent 100%);
   box-shadow: 0 0 10px rgba(167, 139, 250, 0.7), 0 0 20px rgba(167, 139, 250, 0.3);
   top: 35%;
-  left: 36%;
+  left: 12%;
   animation-delay: -2.6s;
 }
 
@@ -741,6 +741,21 @@ body {
     0 0 0 1px rgba(2, 6, 23, 0.95),
     0 0 24px rgba(79, 209, 255, 0.2),
     0 8px 32px rgba(0, 0, 0, 0.4);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Top-edge glass highlight */
+.card-holo::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.06) 30%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.06) 70%, transparent 100%);
+  pointer-events: none;
+  z-index: 1;
 }
 
 .card-holo-hover {
@@ -791,12 +806,24 @@ body {
   position: relative;
   z-index: 1;
   margin-bottom: 1.75rem;
-  padding: 0 0.5rem;
+  padding: 0 0.5rem 1.25rem;
   font-size: 0.95rem;
   font-weight: 700;
   letter-spacing: 0.24em;
   color: #67e8f9;
   text-shadow: 0 0 16px rgba(34, 211, 238, 0.65);
+  border-bottom: 1px solid rgba(34, 211, 238, 0.15);
+}
+
+.sidebar-nav-label {
+  position: relative;
+  z-index: 1;
+  padding: 0 0.5rem 0.4rem;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  color: rgba(34, 211, 238, 0.3);
+  text-transform: uppercase;
 }
 
 .sidebar-nav {
@@ -943,4 +970,156 @@ body {
   max-width: 28rem;
   color: rgba(186, 230, 253, 0.45);
   line-height: 1.6;
+}
+
+/* ── Action cards with per-color left border accent ── */
+.card-action {
+  border-left-width: 2px;
+  border-left-style: solid;
+  border-left-color: transparent;
+  transition: box-shadow 180ms ease-out, transform 180ms ease-out, border-color 180ms ease-out;
+}
+.card-action--cyan {
+  border-left-color: rgba(34, 211, 238, 0.5);
+}
+.card-action--cyan:hover {
+  border-left-color: rgba(34, 211, 238, 0.9);
+  box-shadow: 0 0 0 1px rgba(2, 6, 23, 0.95), 0 0 28px rgba(34, 211, 238, 0.25), 0 8px 32px rgba(0,0,0,0.5);
+  transform: translateY(-2px);
+}
+.card-action--indigo {
+  border-left-color: rgba(99, 102, 241, 0.5);
+}
+.card-action--indigo:hover {
+  border-left-color: rgba(99, 102, 241, 0.9);
+  box-shadow: 0 0 0 1px rgba(2, 6, 23, 0.95), 0 0 28px rgba(99, 102, 241, 0.25), 0 8px 32px rgba(0,0,0,0.5);
+  transform: translateY(-2px);
+}
+.card-action--fuchsia {
+  border-left-color: rgba(217, 70, 239, 0.5);
+}
+.card-action--fuchsia:hover {
+  border-left-color: rgba(217, 70, 239, 0.9);
+  box-shadow: 0 0 0 1px rgba(2, 6, 23, 0.95), 0 0 28px rgba(217, 70, 239, 0.25), 0 8px 32px rgba(0,0,0,0.5);
+  transform: translateY(-2px);
+}
+.card-action--emerald {
+  border-left-color: rgba(52, 211, 153, 0.5);
+}
+.card-action--emerald:hover {
+  border-left-color: rgba(52, 211, 153, 0.9);
+  box-shadow: 0 0 0 1px rgba(2, 6, 23, 0.95), 0 0 28px rgba(52, 211, 153, 0.25), 0 8px 32px rgba(0,0,0,0.5);
+  transform: translateY(-2px);
+}
+.card-action--sky {
+  border-left-color: rgba(56, 189, 248, 0.5);
+}
+.card-action--sky:hover {
+  border-left-color: rgba(56, 189, 248, 0.9);
+  box-shadow: 0 0 0 1px rgba(2, 6, 23, 0.95), 0 0 28px rgba(56, 189, 248, 0.25), 0 8px 32px rgba(0,0,0,0.5);
+  transform: translateY(-2px);
+}
+.card-action--violet {
+  border-left-color: rgba(139, 92, 246, 0.5);
+}
+.card-action--violet:hover {
+  border-left-color: rgba(139, 92, 246, 0.9);
+  box-shadow: 0 0 0 1px rgba(2, 6, 23, 0.95), 0 0 28px rgba(139, 92, 246, 0.25), 0 8px 32px rgba(0,0,0,0.5);
+  transform: translateY(-2px);
+}
+
+/* ── Progress track with inner glow ── */
+.progress-track {
+  background: rgba(15, 23, 42, 0.8);
+  box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.6), inset 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+/* ── Page main subtle depth glow ── */
+.page-main::after {
+  content: "";
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  width: 40vw;
+  height: 40vh;
+  pointer-events: none;
+  background: radial-gradient(ellipse at bottom right, rgba(99, 102, 241, 0.06) 0%, transparent 70%);
+  z-index: 0;
+}
+
+/* ── Collapsible sidebar ── */
+.sidebar-collapsed {
+  width: 3.5rem;
+  padding: 1.5rem 0.5rem;
+}
+.sidebar-collapsed .sidebar-logo-text,
+.sidebar-collapsed .sidebar-item-label,
+.sidebar-collapsed .sidebar-nav-label,
+.sidebar-collapsed .sidebar-logout-label {
+  display: none;
+}
+.sidebar-collapsed .sidebar-item {
+  justify-content: center;
+  padding: 0.5rem;
+}
+.sidebar-collapsed .sidebar-logout {
+  justify-content: center;
+  padding: 0.5rem;
+}
+.sidebar-toggle {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 0.375rem;
+  border: 1px solid rgba(34, 211, 238, 0.2);
+  color: rgba(34, 211, 238, 0.5);
+  transition: all 130ms ease-out;
+  flex-shrink: 0;
+}
+.sidebar-toggle:hover {
+  border-color: rgba(34, 211, 238, 0.5);
+  color: rgba(34, 211, 238, 0.9);
+  background: rgba(34, 211, 238, 0.08);
+}
+
+/* Sidebar width transition */
+.sidebar {
+  transition: width 220ms cubic-bezier(0.4, 0, 0.2, 1), padding 220ms cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+/* ── Wishlist card status accent strip ── */
+.wishlist-card-strip {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  border-radius: 1rem 1rem 0 0;
+}
+.wishlist-card-strip--published {
+  background: linear-gradient(90deg, rgba(34, 211, 238, 0.7), rgba(99, 102, 241, 0.5));
+  box-shadow: 0 0 8px rgba(34, 211, 238, 0.4);
+}
+.wishlist-card-strip--draft {
+  background: linear-gradient(90deg, rgba(100, 116, 139, 0.5), rgba(71, 85, 105, 0.3));
+}
+.wishlist-card-strip--archived {
+  background: linear-gradient(90deg, rgba(71, 85, 105, 0.4), rgba(51, 65, 85, 0.2));
+}
+.wishlist-card-strip--active {
+  background: linear-gradient(90deg, rgba(52, 211, 153, 0.7), rgba(34, 211, 238, 0.5));
+  box-shadow: 0 0 8px rgba(52, 211, 153, 0.35);
+}
+
+/* ── Participation type badges ── */
+.badge-followed {
+  background: radial-gradient(circle at top, rgba(34, 211, 238, 0.15), rgba(8, 15, 40, 0.95));
+  border: 1px solid rgba(34, 211, 238, 0.4);
+  box-shadow: 0 0 8px rgba(34, 211, 238, 0.2);
+  color: #67e8f9;
 }
