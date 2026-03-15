@@ -3,6 +3,7 @@
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { registerRequest } from "@/lib/auth";
+import Footer from "@/components/Footer";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -153,6 +154,7 @@ export default function RegisterPage() {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }
