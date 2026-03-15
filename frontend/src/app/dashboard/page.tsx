@@ -141,18 +141,60 @@ export default function DashboardPage() {
       </aside>
 
       <main className="flex-1 px-8 py-10">
-        <h1 className="mb-2 text-2xl font-semibold text-sky-50">
-          {user ? `Welcome, ${user.nickname}` : "Welcome to GiftByte"}
+        <h1 className="mb-1 text-2xl font-semibold text-sky-50">
+          {user ? `Welcome back, ${user.nickname}` : "Welcome to GiftByte"}
         </h1>
         <p className="mb-6 text-xs text-sky-200/70">
-          This is your dashboard. Here you&apos;ll manage your wishlists and
-          wallet once those features are added.
+          Your celebration hub. Create wishlists, share them with friends, and track gifts.
         </p>
 
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 max-w-3xl mb-8">
+          <button
+            type="button"
+            onClick={() => router.push("/wishlists/create")}
+            className="card-holo card-holo-hover flex flex-col gap-1 border border-cyan-500/40 px-4 py-4 text-left"
+          >
+            <span className="text-xs font-semibold text-cyan-200">New Wishlist</span>
+            <span className="text-[11px] text-sky-200/70">Create a wishlist for your next celebration.</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => router.push("/wishlists")}
+            className="card-holo card-holo-hover flex flex-col gap-1 border border-cyan-500/40 px-4 py-4 text-left"
+          >
+            <span className="text-xs font-semibold text-cyan-200">My Wishlists</span>
+            <span className="text-[11px] text-sky-200/70">View and manage your wishlists.</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => router.push("/participation")}
+            className="card-holo card-holo-hover flex flex-col gap-1 border border-cyan-500/40 px-4 py-4 text-left"
+          >
+            <span className="text-xs font-semibold text-cyan-200">Participation</span>
+            <span className="text-[11px] text-sky-200/70">Gifts you&apos;ve reserved or contributed to.</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => router.push("/wallet")}
+            className="card-holo card-holo-hover flex flex-col gap-1 border border-cyan-500/40 px-4 py-4 text-left"
+          >
+            <span className="text-xs font-semibold text-cyan-200">Wallet</span>
+            <span className="text-[11px] text-sky-200/70">Check your balance and transactions.</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => router.push("/profile")}
+            className="card-holo card-holo-hover flex flex-col gap-1 border border-cyan-500/40 px-4 py-4 text-left"
+          >
+            <span className="text-xs font-semibold text-cyan-200">Profile</span>
+            <span className="text-[11px] text-sky-200/70">Update your nickname, avatar, and payout info.</span>
+          </button>
+        </div>
+
         {user && (
-          <div className="card-holo mt-2 max-w-md px-4 py-3 text-sm">
+          <div className="card-holo max-w-md px-4 py-3 text-sm">
             <h2 className="mb-2 text-sm font-semibold text-cyan-200">
-              Your account
+              Account
             </h2>
             <dl className="space-y-1 text-sky-100/80">
               <div className="flex justify-between">

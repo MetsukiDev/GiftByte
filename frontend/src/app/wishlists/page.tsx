@@ -148,7 +148,7 @@ export default function WishlistsPage() {
                 onClick={() => router.push(`/wishlists/${wl.id}`)}
                 className="card-holo card-holo-hover flex flex-col items-start border border-cyan-500/40 p-4 text-left text-sm text-sky-100/90"
               >
-                <div className="mb-1 text-sm font-semibold text-zinc-900">
+                <div className="mb-1 text-sm font-semibold text-sky-50">
                   {wl.title}
                 </div>
                 {wl.description && (

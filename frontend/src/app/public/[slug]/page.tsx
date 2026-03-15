@@ -195,51 +195,62 @@ export default function PublicWishlistPage() {
 
                     {/* Actions */}
                     <div className="mt-3 space-y-2">
-                      {/* Guest name (shared for both actions) */}
-                      <input
-                        type="text"
-                        placeholder="Your name (optional)"
-                        value={guestNames[gift.id] ?? ""}
-                        onChange={(e) => setGuestNames((p) => ({ ...p, [gift.id]: e.target.value }))}
-                        className="input-cyber w-full px-2 py-1 text-[11px]"
-                      />
-
-                      {/* Single gift: reserve */}
-                      {gift.gift_type === "single" && (
-                        <button
-                          type="button"
-                          disabled={isBusy || isReserved}
-                          onClick={() => handleReserve(gift)}
-                          className="btn-cyber-primary w-full py-1.5 text-[11px] tracking-[0.15em] disabled:opacity-60"
-                        >
-                          {isBusy ? "..." : isReserved ? "Reserved" : "Reserve this gift"}
-                        </button>
-                      )}
-
-                      {/* Group gift: contribute */}
-                      {gift.gift_type === "group" && !isFunded && (
-                        <div className="flex gap-2">
+                      {/* Only show actions if the gift is still actionable */}
+                      {gift.gift_type === "single" && !isReserved && (
+                        <>
                           <input
-                            type="number"
-                            min="0.01"
-                            step="0.01"
-                            placeholder="Amount"
-                            value={amounts[gift.id] ?? ""}
-                            onChange={(e) => setAmounts((p) => ({ ...p, [gift.id]: e.target.value }))}
-                            className="input-cyber flex-1 px-2 py-1 text-[11px]"
+                            type="text"
+                            placeholder="Your name (optional)"
+                            value={guestNames[gift.id] ?? ""}
+                            onChange={(e) => setGuestNames((p) => ({ ...p, [gift.id]: e.target.value }))}
+                            className="input-cyber w-full px-2 py-1 text-[11px]"
                           />
                           <button
                             type="button"
                             disabled={isBusy}
-                            onClick={() => handleContribute(gift)}
-                            className="btn-cyber-primary px-3 py-1 text-[11px] tracking-[0.15em] disabled:opacity-60"
+                            onClick={() => handleReserve(gift)}
+                            className="btn-cyber-primary w-full py-1.5 text-[11px] tracking-[0.15em] disabled:opacity-60"
                           >
-                            {isBusy ? "..." : "Contribute"}
+                            {isBusy ? "Reserving..." : "Reserve this gift"}
                           </button>
-                        </div>
+                        </>
+                      )}
+                      {gift.gift_type === "single" && isReserved && (
+                        <p className="text-[11px] text-sky-300/70">Someone has already reserved this gift.</p>
+                      )}
+
+                      {gift.gift_type === "group" && !isFunded && (
+                        <>
+                          <input
+                            type="text"
+                            placeholder="Your name (optional)"
+                            value={guestNames[gift.id] ?? ""}
+                            onChange={(e) => setGuestNames((p) => ({ ...p, [gift.id]: e.target.value }))}
+                            className="input-cyber w-full px-2 py-1 text-[11px]"
+                          />
+                          <div className="flex gap-2">
+                            <input
+                              type="number"
+                              min="0.01"
+                              step="0.01"
+                              placeholder="Amount"
+                              value={amounts[gift.id] ?? ""}
+                              onChange={(e) => setAmounts((p) => ({ ...p, [gift.id]: e.target.value }))}
+                              className="input-cyber flex-1 px-2 py-1 text-[11px]"
+                            />
+                            <button
+                              type="button"
+                              disabled={isBusy}
+                              onClick={() => handleContribute(gift)}
+                              className="btn-cyber-primary px-3 py-1 text-[11px] tracking-[0.15em] disabled:opacity-60"
+                            >
+                              {isBusy ? "..." : "Contribute"}
+                            </button>
+                          </div>
+                        </>
                       )}
                       {gift.gift_type === "group" && isFunded && (
-                        <p className="text-[11px] text-cyan-300">Fully funded!</p>
+                        <p className="text-[11px] text-cyan-300">Fully funded — thank you to everyone who contributed!</p>
                       )}
                     </div>
                   </div>

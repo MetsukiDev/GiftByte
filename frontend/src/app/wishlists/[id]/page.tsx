@@ -125,7 +125,7 @@ export default function WishlistDetailPage() {
     }
   }
 
-  async function handleAddGift(e: React.FormEvent) {
+  async function handleAddGift(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setAddError(null);
     setAdding(true);
@@ -256,7 +256,7 @@ export default function WishlistDetailPage() {
         <section className="mt-2 max-w-2xl space-y-4">
           {/* Add gift form */}
           <div className="card-holo px-4 py-3 text-sm">
-            <h2 className="mb-2 text-sm font-semibold text-zinc-900">Add gift</h2>
+            <h2 className="mb-2 text-sm font-semibold text-cyan-200">Add gift</h2>
             {addError && (
               <div className="mb-3 rounded-md border border-rose-500/70 bg-rose-950/40 px-3 py-2 text-xs text-rose-100">{addError}</div>
             )}
@@ -302,7 +302,7 @@ export default function WishlistDetailPage() {
 
           {/* Gift list */}
           <div className="card-holo px-4 py-3 text-sm">
-            <h2 className="mb-2 text-sm font-semibold text-zinc-900">Gifts ({gifts.length})</h2>
+            <h2 className="mb-2 text-sm font-semibold text-cyan-200">Gifts ({gifts.length})</h2>
             {gifts.length === 0 ? (
               <p className="text-xs text-sky-200/80">No gifts yet. Add your first gift above.</p>
             ) : (

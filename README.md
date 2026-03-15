@@ -96,6 +96,7 @@ Frontend will be available at `http://localhost:3000`.
 
 - `/profile` — current user info (email, nickname, avatar URL, payout method) with a minimal edit form
 - `/wallet` — wallet overview and transaction list (+ mock top‑up for local testing)
+- `/participation` — gifts you have reserved or contributed to across all wishlists
 
 ---
 
@@ -123,15 +124,30 @@ See `backend/.env.example` for defaults. Common keys:
 1. Register and login.
 2. Go to `/wishlists/create` and create a wishlist.
 3. Open it from `/wishlists` and add gifts (single and group).
-4. Publish the wishlist via the API (`POST /wishlists/{id}/publish`) to get a `public_slug`.
-5. Share `http://localhost:3000/public/{public_slug}` with friends.
+4. Click **Publish & Share** on the wishlist detail page to get a public share link.
+5. Copy the share link and open it in a private/incognito window to simulate a friend.
 
 **Friend side**
 
-1. Open `/public/{public_slug}` in a browser (no auth required to view).
-2. Browse wishlist and gifts; see which gifts are available, reserved, or funded.
+1. Open `/public/{public_slug}` — no login required.
+2. Browse gifts; see which are available, reserved, or funded.
+3. Reserve a single gift (optionally enter your name).
+4. Contribute to a group gift by entering an amount.
 
-Wallet, contributions, and reservations are wired to real endpoints and can be exercised via the API or extended further in the UI without changing the core architecture.
+**Participation**
+
+- After reserving or contributing, go to `/participation` to see your activity across all wishlists.
+
+**Wallet**
+
+- Go to `/wallet` to see your balance and transaction history.
+- Use the mock top-up form to add funds for local testing.
+
+**Delete wishlist**
+
+- On any wishlist detail page, click **Delete wishlist** and confirm.
+- The wishlist is archived and removed from your active list.
+- The public share link becomes inaccessible.
 
 ---
 
