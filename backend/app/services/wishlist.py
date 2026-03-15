@@ -44,7 +44,19 @@ def create_wishlist(db: Session, owner_id: str, data) -> Wishlist:
 
 
 def list_my_wishlists(db: Session, owner_id: str) -> Iterable[Wishlist]:
-    return db.query(Wishlist).filter(Wishlist.owner_id == owner_id).order_by(Wishlist.created_at.desc()).all()
+    return (
+        db.query(Wishlist)
+        .filter(Wishlist.owner_id == owner_id, Wishlist.status != "archived")
+        .order_by(Wishlist.created_at.desc())
+        .all()
+    )
+
+
+def archive_wishlist(db: Session, wishlist: Wishlist) -> None:
+    wishlist.status = "archived"
+    wishlist.is_public = False  # prevent public access after archive
+    db.add(wishlist)
+    db.commit()
 
 
 def get_wishlist_or_404(db: Session, wishlist_id: str) -> Wishlist:
@@ -90,7 +102,7 @@ def get_public_wishlist_by_slug(db: Session, slug: str) -> Wishlist:
         .filter(
             Wishlist.public_slug == slug,
             Wishlist.is_public.is_(True),
-            Wishlist.status == "published",
+            Wishlist.status == "published",  # archived wishlists are excluded here
         )
         .first()
     )

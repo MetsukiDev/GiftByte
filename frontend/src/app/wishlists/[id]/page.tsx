@@ -1,8 +1,8 @@
 "use client";
 
-import { FormEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { fetchWishlistById, publishWishlist, type Wishlist } from "@/lib/wishlists";
+import { fetchWishlistById, publishWishlist, deleteWishlist, type Wishlist } from "@/lib/wishlists";
 import {
   createGiftForWishlist,
   listOwnerGifts,
@@ -23,6 +23,9 @@ export default function WishlistDetailPage() {
   const [publishing, setPublishing] = useState(false);
   const [publishError, setPublishError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
   const [adding, setAdding] = useState(false);
   const [addError, setAddError] = useState<string | null>(null);
   const [title, setTitle] = useState("");
@@ -107,7 +110,22 @@ export default function WishlistDetailPage() {
     });
   }
 
-  async function handleAddGift(e: FormEvent) {
+  async function handleDeleteWishlist() {
+    const token = getToken();
+    if (!token) { router.replace("/login"); return; }
+    setDeleting(true);
+    setDeleteError(null);
+    try {
+      await deleteWishlist(token, params.id);
+      router.replace("/wishlists");
+    } catch (err) {
+      setDeleteError(err instanceof Error ? err.message : "Failed to delete wishlist.");
+      setDeleting(false);
+      setConfirmDelete(false);
+    }
+  }
+
+  async function handleAddGift(e: React.FormEvent) {
     e.preventDefault();
     setAddError(null);
     setAdding(true);
@@ -159,6 +177,7 @@ export default function WishlistDetailPage() {
           <button type="button" onClick={() => router.push("/dashboard")} className="flex w-full items-center rounded-md px-3 py-2 text-left text-sky-200/70 hover:bg-slate-900/80">Dashboard</button>
           <button type="button" onClick={() => router.push("/wishlists")} className="flex w-full items-center rounded-md bg-cyan-500/20 px-3 py-2 text-left font-semibold text-cyan-200 shadow-[0_0_18px_rgba(34,211,238,0.5)]">My Wishlists</button>
           <button type="button" onClick={() => router.push("/wishlists/create")} className="flex w-full items-center rounded-md px-3 py-2 text-left text-sky-200/70 hover:bg-slate-900/80">Create Wishlist</button>
+          <button type="button" onClick={() => router.push("/participation")} className="flex w-full items-center rounded-md px-3 py-2 text-left text-sky-200/70 hover:bg-slate-900/80">Participation</button>
           <button type="button" onClick={() => router.push("/wallet")} className="flex w-full items-center rounded-md px-3 py-2 text-left text-sky-200/70 hover:bg-slate-900/80">Wallet</button>
         </nav>
       </aside>
@@ -186,6 +205,36 @@ export default function WishlistDetailPage() {
               </button>
             )}
             {publishError && <p className="text-xs text-rose-300">{publishError}</p>}
+            {/* Delete wishlist */}
+            {deleteError && <p className="text-xs text-rose-300">{deleteError}</p>}
+            {!confirmDelete ? (
+              <button
+                type="button"
+                onClick={() => setConfirmDelete(true)}
+                className="text-[10px] text-rose-400 hover:text-rose-300 mt-1"
+              >
+                Delete wishlist
+              </button>
+            ) : (
+              <div className="flex items-center gap-2 mt-1">
+                <span className="text-[10px] text-rose-300">Sure?</span>
+                <button
+                  type="button"
+                  disabled={deleting}
+                  onClick={handleDeleteWishlist}
+                  className="text-[10px] font-semibold text-rose-400 hover:text-rose-200 disabled:opacity-60"
+                >
+                  {deleting ? "Deleting..." : "Yes, delete"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setConfirmDelete(false)}
+                  className="text-[10px] text-sky-400 hover:text-sky-200"
+                >
+                  Cancel
+                </button>
+              </div>
+            )}
           </div>
         </div>
 

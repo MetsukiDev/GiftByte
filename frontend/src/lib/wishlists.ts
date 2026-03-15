@@ -177,3 +177,19 @@ export async function publishWishlist(
   return res.json();
 }
 
+export async function deleteWishlist(
+  token: string | null,
+  id: string,
+): Promise<void> {
+  if (!API_URL) throw new Error("API URL is not configured.");
+  const res = await fetch(`${API_URL}/wishlists/${id}`, {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json", ...getAuthHeader(token) },
+  });
+  if (!res.ok) {
+    let message = "Failed to delete wishlist.";
+    try { const d = await res.json(); if (typeof d?.detail === "string") message = d.detail; } catch {}
+    throw new Error(message);
+  }
+}
+

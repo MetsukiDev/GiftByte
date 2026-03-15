@@ -16,7 +16,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.config import get_settings
 from app.core.database import Base, engine
-from app.api import auth, users, wishlists, gifts, wallet, ws, public
+from app.api import auth, users, wishlists, gifts, wallet, ws, public, participation
 from app.models import *  # noqa: F401,F403  (needed so Base.metadata sees all models)
 
 
@@ -54,6 +54,7 @@ app.include_router(gifts.router)
 app.include_router(wallet.router)
 app.include_router(ws.router)
 app.include_router(public.router)
+app.include_router(participation.router)
 
 
 @app.get("/")

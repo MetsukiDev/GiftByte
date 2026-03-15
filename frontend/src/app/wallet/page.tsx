@@ -158,6 +158,13 @@ export default function WalletPage() {
           </button>
           <button
             type="button"
+            onClick={() => router.push("/participation")}
+            className="flex w-full items-center rounded-md px-3 py-2 text-left text-sky-200/70 hover:bg-slate-900/80"
+          >
+            Participation
+          </button>
+          <button
+            type="button"
             className="flex w-full items-center rounded-md bg-cyan-500/20 px-3 py-2 text-left font-semibold text-cyan-200 shadow-[0_0_18px_rgba(34,211,238,0.5)]"
           >
             Wallet

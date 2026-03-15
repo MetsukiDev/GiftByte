@@ -169,3 +169,15 @@ def funding_overview(
     wishlist_service.ensure_owner(wl, current_user.id)
     return wishlist_service.funding_overview_for_wishlist(db, wl)
 
+
+@router.delete("/{wishlist_id}")
+def delete_wishlist_endpoint(
+    wishlist_id: str,
+    db: DbSession,
+    current_user=Depends(get_current_user),
+):
+    wl = wishlist_service.get_wishlist_or_404(db, wishlist_id)
+    wishlist_service.ensure_owner(wl, current_user.id)
+    wishlist_service.archive_wishlist(db, wl)
+    return {"detail": "deleted"}
+
