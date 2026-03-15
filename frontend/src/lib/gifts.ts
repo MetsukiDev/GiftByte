@@ -105,3 +105,89 @@ export async function createGiftForWishlist(
   return res.json();
 }
 
+export async function listOwnerGifts(
+  token: string | null,
+  wishlistId: string,
+): Promise<Gift[]> {
+  if (!API_URL) throw new Error("API URL is not configured.");
+  const res = await fetch(`${API_URL}/wishlists/${wishlistId}/gifts/owner`, {
+    headers: { "Content-Type": "application/json", ...authHeader(token) },
+  });
+  if (!res.ok) {
+    let message = "Failed to load gifts.";
+    try { const d = await res.json(); if (typeof d?.detail === "string") message = d.detail; } catch {}
+    throw new Error(message);
+  }
+  return res.json();
+}
+
+export async function deleteGift(
+  token: string | null,
+  giftId: string,
+): Promise<void> {
+  if (!API_URL) throw new Error("API URL is not configured.");
+  const res = await fetch(`${API_URL}/gifts/${giftId}`, {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json", ...authHeader(token) },
+  });
+  if (!res.ok) {
+    let message = "Failed to delete gift.";
+    try { const d = await res.json(); if (typeof d?.detail === "string") message = d.detail; } catch {}
+    throw new Error(message);
+  }
+}
+
+export async function reserveGift(
+  giftId: string,
+  guestName?: string,
+): Promise<void> {
+  if (!API_URL) throw new Error("API URL is not configured.");
+  const res = await fetch(`${API_URL}/public/gifts/${giftId}/reserve`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ guest_name: guestName ?? null }),
+  });
+  if (!res.ok) {
+    let message = "Failed to reserve gift.";
+    try { const d = await res.json(); if (typeof d?.detail === "string") message = d.detail; } catch {}
+    throw new Error(message);
+  }
+}
+
+export async function contributeToGift(
+  giftId: string,
+  amount: number,
+  guestName?: string,
+): Promise<void> {
+  if (!API_URL) throw new Error("API URL is not configured.");
+  const res = await fetch(`${API_URL}/public/gifts/${giftId}/contribute`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ amount, guest_name: guestName ?? null }),
+  });
+  if (!res.ok) {
+    let message = "Failed to contribute.";
+    try { const d = await res.json(); if (typeof d?.detail === "string") message = d.detail; } catch {}
+    throw new Error(message);
+  }
+}
+
+export type FundingSummary = {
+  gift_id: string;
+  total_contributed: number;
+  target_amount?: number | null;
+  progress?: number | null;
+  currency?: string | null;
+};
+
+export async function getFundingSummary(giftId: string): Promise<FundingSummary> {
+  if (!API_URL) throw new Error("API URL is not configured.");
+  const res = await fetch(`${API_URL}/gifts/${giftId}/funding-summary`);
+  if (!res.ok) {
+    let message = "Failed to load funding summary.";
+    try { const d = await res.json(); if (typeof d?.detail === "string") message = d.detail; } catch {}
+    throw new Error(message);
+  }
+  return res.json();
+}
+

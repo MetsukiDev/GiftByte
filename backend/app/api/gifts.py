@@ -24,6 +24,18 @@ class ContributionRequest(BaseModel):
 router = APIRouter(tags=["gifts"])
 
 
+@router.get("/wishlists/{wishlist_id}/gifts/owner", response_model=list[GiftOwnerView])
+def list_wishlist_gifts_owner(
+    wishlist_id: str,
+    db: DbSession,
+    current_user=Depends(get_current_user),
+):
+    """Authenticated owner view — works for draft and published wishlists."""
+    wishlist = wishlist_service.get_wishlist_or_404(db, wishlist_id)
+    gift_service.ensure_wishlist_owner(db, wishlist_id, current_user.id)
+    return gift_service.list_gifts_for_wishlist(db, wishlist.id)
+
+
 @router.post("/wishlists/{wishlist_id}/gifts", response_model=GiftOwnerView)
 async def create_gift_endpoint(
     wishlist_id: str,
@@ -140,8 +152,14 @@ async def unreserve_gift_endpoint(
 ):
     gift = gift_service.get_gift_or_404(db, gift_id)
     wishlist = gift.wishlist
-    # Only owner can forcibly clear reservations in this MVP
-    gift_service.ensure_wishlist_owner(db, wishlist.id, current_user.id)
+    # Allow: wishlist owner OR the authenticated user who made the reservation
+    is_owner = wishlist.owner_id == current_user.id
+    is_reserver = gift_service.is_reservation_owner(db, gift, current_user.id)
+    if not is_owner and not is_reserver:
+        raise HTTPException(
+            status_code=http_status.HTTP_403_FORBIDDEN,
+            detail="Not authorized to unreserve this gift",
+        )
     gift_service.unreserve_gift(db, gift)
     await manager.broadcast(
         wishlist_id=wishlist.id,

@@ -80,6 +80,20 @@ def delete_gift(db: Session, gift: Gift):
     db.commit()
 
 
+def is_reservation_owner(db: Session, gift: Gift, user_id: str) -> bool:
+    """Return True if user_id holds the active reservation on this gift."""
+    reservation = (
+        db.query(GiftReservation)
+        .filter(
+            GiftReservation.gift_id == gift.id,
+            GiftReservation.cancelled_at.is_(None),
+            GiftReservation.reserved_by_user_id == user_id,
+        )
+        .first()
+    )
+    return reservation is not None
+
+
 def reserve_gift(db: Session, gift: Gift, guest_name: str | None, user_id: str | None):
     if gift.gift_type == "group":
         raise HTTPException(
@@ -137,6 +151,11 @@ def contribute_to_gift(
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Only group gifts accept contributions",
+        )
+    if gift.status == "funded":
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Gift is already fully funded",
         )
     # Optionally deduct from contributor wallet (if authenticated and opted in)
     if use_wallet and user_id is not None:
