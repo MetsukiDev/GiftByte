@@ -2,18 +2,18 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { fetchCurrentUser, type User } from "@/lib/auth";
+import { fetchMyWishlists, type Wishlist } from "@/lib/wishlists";
 
-export default function DashboardPage() {
+export default function WishlistsPage() {
   const router = useRouter();
-  const [user, setUser] = useState<User | null>(null);
+  const [wishlists, setWishlists] = useState<Wishlist[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     let isMounted = true;
 
-    async function loadUser() {
+    async function load() {
       const token =
         typeof window !== "undefined"
           ? window.localStorage.getItem("access_token")
@@ -25,21 +25,17 @@ export default function DashboardPage() {
       }
 
       try {
-        const currentUser = await fetchCurrentUser(token);
+        const data = await fetchMyWishlists(token);
         if (isMounted) {
-          setUser(currentUser);
+          setWishlists(data);
         }
       } catch (err) {
-        if (typeof window !== "undefined") {
-          window.localStorage.removeItem("access_token");
-        }
+        const message =
+          err instanceof Error
+            ? err.message
+            : "Failed to load your wishlists. Please try again.";
         if (isMounted) {
-          const message =
-            err instanceof Error
-              ? err.message
-              : "Unable to load your account. Please sign in again.";
           setError(message);
-          router.replace("/login");
         }
       } finally {
         if (isMounted) {
@@ -48,25 +44,18 @@ export default function DashboardPage() {
       }
     }
 
-    loadUser();
+    load();
 
     return () => {
       isMounted = false;
     };
   }, [router]);
 
-  function handleLogout() {
-    if (typeof window !== "undefined") {
-      window.localStorage.removeItem("access_token");
-    }
-    router.replace("/login");
-  }
-
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#02030a] text-sky-100">
         <div className="card-holo px-4 py-3 text-sm">
-          Loading your dashboard...
+          Loading your wishlists...
         </div>
       </div>
     );
@@ -91,7 +80,8 @@ export default function DashboardPage() {
         <nav className="flex-1 space-y-1 text-xs">
           <button
             type="button"
-            className="flex w-full items-center rounded-md bg-cyan-500/20 px-3 py-2 text-left font-semibold text-cyan-200 shadow-[0_0_18px_rgba(34,211,238,0.5)]"
+            onClick={() => router.push("/dashboard")}
+            className="flex w-full items-center rounded-md px-3 py-2 text-left text-sky-200/70 hover:bg-slate-900/80"
           >
             Dashboard
           </button>
@@ -104,8 +94,7 @@ export default function DashboardPage() {
           </button>
           <button
             type="button"
-            onClick={() => router.push("/wishlists")}
-            className="flex w-full items-center rounded-md px-3 py-2 text-left text-sky-200/70 hover:bg-slate-900/80"
+            className="flex w-full items-center rounded-md bg-cyan-500/20 px-3 py-2 text-left font-semibold text-cyan-200 shadow-[0_0_18px_rgba(34,211,238,0.5)]"
           >
             My Wishlists
           </button>
@@ -124,43 +113,54 @@ export default function DashboardPage() {
             Wallet
           </button>
         </nav>
-        <button
-          type="button"
-          onClick={handleLogout}
-          className="mt-4 flex w-full items-center justify-center rounded-md border border-rose-500/60 px-3 py-2 text-xs font-semibold tracking-[0.18em] text-rose-100 hover:bg-rose-950/60"
-        >
-          Logout
-        </button>
       </aside>
 
       <main className="flex-1 px-8 py-10">
-        <h1 className="mb-2 text-2xl font-semibold text-sky-50">
-          {user ? `Welcome, ${user.nickname}` : "Welcome to GiftByte"}
-        </h1>
-        <p className="mb-6 text-xs text-sky-200/70">
-          This is your dashboard. Here you&apos;ll manage your wishlists and
-          wallet once those features are added.
-        </p>
+        <div className="mb-4 flex items-center justify-between">
+          <h1 className="text-2xl font-semibold text-sky-50">My Wishlists</h1>
+          <button
+            type="button"
+            onClick={() => router.push("/wishlists/create")}
+            className="btn-cyber-primary rounded-full px-4 py-2 text-xs tracking-[0.18em]"
+          >
+            New Wishlist
+          </button>
+        </div>
 
-        {user && (
-          <div className="card-holo mt-2 max-w-md px-4 py-3 text-sm">
-            <h2 className="mb-2 text-sm font-semibold text-cyan-200">
-              Your account
-            </h2>
-            <dl className="space-y-1 text-sky-100/80">
-              <div className="flex justify-between">
-                <dt className="text-[11px] uppercase tracking-[0.22em] text-cyan-300/80">
-                  Email
-                </dt>
-                <dd>{user.email}</dd>
-              </div>
-              <div className="flex justify-between">
-                <dt className="text-[11px] uppercase tracking-[0.22em] text-cyan-300/80">
-                  Nickname
-                </dt>
-                <dd>{user.nickname}</dd>
-              </div>
-            </dl>
+        {wishlists.length === 0 ? (
+          <div className="card-holo max-w-md border border-dashed border-cyan-400/60 px-4 py-6 text-sm text-sky-200/80">
+            You don&apos;t have any wishlists yet. Create your first one for an
+            upcoming celebration.
+          </div>
+        ) : (
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {wishlists.map((wl) => (
+              <button
+                key={wl.id}
+                type="button"
+                onClick={() => router.push(`/wishlists/${wl.id}`)}
+                className="card-holo card-holo-hover flex flex-col items-start border border-cyan-500/40 p-4 text-left text-sm text-sky-100/90"
+              >
+                <div className="mb-1 text-sm font-semibold text-zinc-900">
+                  {wl.title}
+                </div>
+                {wl.description && (
+                  <p className="mb-2 line-clamp-2 text-xs text-sky-200/70">
+                    {wl.description}
+                  </p>
+                )}
+                <div className="mt-auto flex w-full items-center justify-between text-xs text-sky-300/80">
+                  <span>
+                    {wl.event_date
+                      ? new Date(wl.event_date).toLocaleDateString()
+                      : "No event date"}
+                  </span>
+                  <span className="badge-neon">
+                    {wl.status}
+                  </span>
+                </div>
+              </button>
+            ))}
           </div>
         )}
       </main>

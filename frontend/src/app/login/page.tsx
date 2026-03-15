@@ -32,77 +32,111 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-zinc-50">
-      <div className="w-full max-w-md rounded-lg border border-zinc-200 bg-white px-6 py-8 shadow-sm">
-        <h1 className="mb-2 text-center text-2xl font-semibold text-zinc-900">
-          GiftByte
-        </h1>
-        <p className="mb-6 text-center text-sm text-zinc-500">
-          Sign in to your wishlist account
-        </p>
+    <div className="auth-wrapper">
+      <div className="cyber-grid" />
+      <div className="cyber-glow" />
+      <div className="pixel-skyline">
+        <div className="pixel-car" />
+        <div className="pixel-car pixel-car--2" />
+        <div className="pixel-car pixel-car--3" />
+      </div>
 
-        {error && (
-          <div className="mb-4 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
-            {error}
-          </div>
-        )}
+      <div className="auth-inner">
+        <div className="relative panel-cyber px-6 py-8 sm:px-8 sm:py-10">
+          <div className="pixel-scanlines" />
+          <div className="pixel-drone" style={{ top: "-32px", left: "8%" }} />
+          <div
+            className="pixel-drone"
+            style={{ top: "-10px", right: "6%", animationDelay: "0.8s" }}
+          />
+          <div
+            className="pixel-drone"
+            style={{ top: "30px", left: "14%", animationDelay: "1.4s" }}
+          />
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-1">
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-zinc-800"
-            >
-              Email
-            </label>
-            <input
-              id="email"
-              type="email"
-              autoComplete="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full rounded-md border border-zinc-300 px-3 py-2 text-sm shadow-sm focus:border-zinc-900 focus:outline-none focus:ring-1 focus:ring-zinc-900"
-            />
+          <div className="holo-balloons">
+            <div className="holo-balloon" />
+            <div className="holo-balloon" />
+            <div className="holo-balloon" />
           </div>
 
-          <div className="space-y-1">
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium text-zinc-800"
-            >
-              Password
-            </label>
-            <input
-              id="password"
-              type="password"
-              autoComplete="current-password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full rounded-md border border-zinc-300 px-3 py-2 text-sm shadow-sm focus:border-zinc-900 focus:outline-none focus:ring-1 focus:ring-zinc-900"
-            />
+          <div className="relative z-10">
+            <div className="mb-6 text-center">
+              <p className="text-[11px] font-semibold tracking-[0.3em] text-cyan-300">
+                GIFTBYTE // ACCESS NODE
+              </p>
+              <h1 className="mt-2 text-2xl font-semibold text-sky-50">
+                CyberPixel Login
+              </h1>
+              <p className="mt-1 text-xs text-sky-200/70">
+                Authenticate to enter your celebration console.
+              </p>
+            </div>
+
+            {error && (
+              <div className="mb-4 rounded-md border border-rose-500/60 bg-rose-950/40 px-3 py-2 text-xs text-rose-100 shadow-[0_0_18px_rgba(248,113,113,0.45)]">
+                {error}
+              </div>
+            )}
+
+            <form onSubmit={handleSubmit} className="space-y-4 text-sm">
+              <div className="space-y-1">
+                <label
+                  htmlFor="email"
+                  className="block text-xs font-semibold tracking-[0.16em] text-cyan-300/80"
+                >
+                  EMAIL IDENT
+                </label>
+                <input
+                  id="email"
+                  type="email"
+                  autoComplete="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="input-cyber w-full px-3 py-2 text-sm"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <label
+                  htmlFor="password"
+                  className="block text-xs font-semibold tracking-[0.16em] text-cyan-300/80"
+                >
+                  ACCESS KEY
+                </label>
+                <input
+                  id="password"
+                  type="password"
+                  autoComplete="current-password"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="input-cyber w-full px-3 py-2 text-sm"
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="btn-cyber-primary mt-2 flex w-full items-center justify-center px-4 py-2 text-xs tracking-[0.18em]"
+              >
+                {loading ? "INITIALIZING..." : "ENTER DASHBOARD"}
+              </button>
+            </form>
+
+            <p className="mt-4 text-center text-[11px] text-sky-200/70">
+              No access yet?{" "}
+              <button
+                type="button"
+                onClick={() => router.push("/register")}
+                className="font-semibold text-fuchsia-300 underline-offset-4 hover:underline"
+              >
+                Register a celebration ID
+              </button>
+            </p>
           </div>
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="flex w-full items-center justify-center rounded-md bg-zinc-900 px-3 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-70"
-          >
-            {loading ? "Signing in..." : "Sign in"}
-          </button>
-        </form>
-
-        <p className="mt-4 text-center text-xs text-zinc-500">
-          Don&apos;t have an account?{" "}
-          <button
-            type="button"
-            onClick={() => router.push("/register")}
-            className="font-medium text-zinc-900 underline-offset-2 hover:underline"
-          >
-            Create one
-          </button>
-        </p>
+        </div>
       </div>
     </div>
   );
