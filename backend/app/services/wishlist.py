@@ -85,7 +85,15 @@ def publish_wishlist(db: Session, wishlist: Wishlist) -> Wishlist:
 
 
 def get_public_wishlist_by_slug(db: Session, slug: str) -> Wishlist:
-    wishlist = db.query(Wishlist).filter(Wishlist.public_slug == slug, Wishlist.is_public.is_(True)).first()
+    wishlist = (
+        db.query(Wishlist)
+        .filter(
+            Wishlist.public_slug == slug,
+            Wishlist.is_public.is_(True),
+            Wishlist.status == "published",
+        )
+        .first()
+    )
     if not wishlist:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Wishlist not found")
     return wishlist
@@ -98,4 +106,44 @@ def calculate_funding_summary(db: Session, gift: Gift) -> float:
         .scalar()
     )
     return float(total or 0)
+
+
+def funding_overview_for_wishlist(db: Session, wishlist: Wishlist):
+    """Return per-gift and total funding info for a wishlist."""
+    gifts = (
+        db.query(Gift)
+        .filter(Gift.wishlist_id == wishlist.id, Gift.status != "archived")
+        .all()
+    )
+    from app.schemas.wishlist import GiftFundingItem, WishlistFundingOverview
+
+    items: list[GiftFundingItem] = []
+    total_all = 0.0
+    currency = None
+    for g in gifts:
+        total = calculate_funding_summary(db, g)
+        total_all += total
+        if g.currency and currency is None:
+            currency = g.currency
+        progress = None
+        if g.price and float(g.price) > 0:
+            progress = float(total) / float(g.price)
+        items.append(
+            GiftFundingItem(
+                gift_id=g.id,
+                title=g.title,
+                price=g.price,
+                currency=g.currency,
+                gift_type=g.gift_type,
+                status=g.status,
+                total_contributed=total,
+                progress=progress,
+            )
+        )
+    return WishlistFundingOverview(
+        wishlist_id=wishlist.id,
+        total_contributed=total_all,
+        currency=currency,
+        gifts=items,
+    )
 

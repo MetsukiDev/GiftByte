@@ -19,6 +19,7 @@ class Wallet(Base):
     )
     balance: Mapped[float] = mapped_column(Numeric(12, 2), default=0, nullable=False)
     currency: Mapped[str] = mapped_column(String(8), default="USD", nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
     updated_at: Mapped[datetime] = mapped_column(
         DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False
     )
@@ -38,9 +39,9 @@ class Transaction(Base):
     wallet_id: Mapped[str] = mapped_column(
         UUID(as_uuid=False), ForeignKey("wallets.id"), nullable=False, index=True
     )
-    type: Mapped[str] = mapped_column(String(32), nullable=False)
+    type: Mapped[str] = mapped_column(String(32), nullable=False)  # topup, contribution_hold, contribution_release, payout, refund
     amount: Mapped[float] = mapped_column(Numeric(12, 2), nullable=False)
-    status: Mapped[str] = mapped_column(String(32), nullable=False)
+    status: Mapped[str] = mapped_column(String(32), nullable=False)  # pending, completed, failed
     metadata_json: Mapped[str | None] = mapped_column(Text, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
 

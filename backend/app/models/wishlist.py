@@ -28,6 +28,8 @@ class Wishlist(Base):
     updated_at: Mapped[datetime] = mapped_column(
         DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False
     )
+    funds_released: Mapped[bool] = mapped_column(default=False, nullable=False)
+    funds_released_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
 
     owner = relationship("User", back_populates="wishlists")
     gifts = relationship("Gift", back_populates="wishlist", cascade="all, delete-orphan")

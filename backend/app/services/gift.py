@@ -3,7 +3,7 @@ from datetime import datetime
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 
-from app.models import Gift, GiftReservation, GiftContribution, Wishlist
+from app.models import Gift, GiftReservation, GiftContribution, Wishlist, Wallet, Transaction
 
 
 def ensure_wishlist_owner(db: Session, wishlist_id: str, user_id: str) -> Wishlist:
@@ -33,7 +33,12 @@ def create_gift(db: Session, wishlist: Wishlist, data) -> Gift:
 
 
 def list_gifts_for_wishlist(db: Session, wishlist_id: str) -> list[Gift]:
-    return db.query(Gift).filter(Gift.wishlist_id == wishlist_id).all()
+    # Do not return archived gifts to public/owner listings.
+    return (
+        db.query(Gift)
+        .filter(Gift.wishlist_id == wishlist_id, Gift.status != "archived")
+        .all()
+    )
 
 
 def get_gift_or_404(db: Session, gift_id: str) -> Gift:
@@ -69,11 +74,18 @@ def update_gift(db: Session, gift: Gift, data) -> Gift:
 
 
 def delete_gift(db: Session, gift: Gift):
-    db.delete(gift)
+    # Soft-delete by archiving so historical reservations / contributions remain valid.
+    gift.status = "archived"
+    db.add(gift)
     db.commit()
 
 
 def reserve_gift(db: Session, gift: Gift, guest_name: str | None, user_id: str | None):
+    if gift.gift_type == "group":
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Group gifts use contributions, not reservations",
+        )
     existing = (
         db.query(GiftReservation)
         .filter(GiftReservation.gift_id == gift.id, GiftReservation.cancelled_at.is_(None))
@@ -111,17 +123,59 @@ def unreserve_gift(db: Session, gift: Gift):
     return reservation
 
 
-def contribute_to_gift(db: Session, gift: Gift, amount: float, user_id: str | None, guest_name: str | None):
+def contribute_to_gift(
+    db: Session,
+    gift: Gift,
+    amount: float,
+    user_id: str | None,
+    guest_name: str | None,
+    use_wallet: bool = False,
+):
     if amount <= 0:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Amount must be positive")
+    if gift.gift_type != "group":
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Only group gifts accept contributions",
+        )
+    # Optionally deduct from contributor wallet (if authenticated and opted in)
+    if use_wallet and user_id is not None:
+        wallet = db.query(Wallet).filter(Wallet.user_id == user_id).first()
+        if not wallet:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Contributor wallet not found")
+        if wallet.balance < amount:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Insufficient wallet balance")
+        wallet.balance -= amount
+        tx = Transaction(
+            wallet_id=wallet.id,
+            type="contribution_hold",
+            amount=amount,
+            status="completed",
+            metadata_json=None,
+        )
+        db.add(wallet)
+        db.add(tx)
+
     contribution = GiftContribution(
         gift_id=gift.id,
         contributor_user_id=user_id,
         contributor_guest_name=guest_name,
         amount=amount,
     )
-    if gift.gift_type == "group" and gift.status in {"available", "funding"}:
-        gift.status = "funding"
+    # Update gift funding status based on total contributed vs price.
+    if gift.price is not None:
+        # Sum existing contributions and this one.
+        # Using simple Python sum here; for large data consider an aggregate query.
+        existing_total = sum(float(c.amount) for c in gift.contributions)
+        new_total = existing_total + float(amount)
+        target = float(gift.price)
+        if new_total >= target:
+            gift.status = "funded"
+        elif gift.status in {"available", "funding"}:
+            gift.status = "funding"
+    else:
+        if gift.status in {"available", "funding"}:
+            gift.status = "funding"
     db.add(contribution)
     db.add(gift)
     db.commit()

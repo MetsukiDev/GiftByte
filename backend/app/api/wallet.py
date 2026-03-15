@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 from app.api.deps import DbSession, get_current_user
-from app.schemas.wallet import WalletView, TransactionView
+from app.schemas.wallet import WalletView, TransactionView, MockTopupRequest
 from app.services import wallet as wallet_service
 
 
@@ -29,11 +29,11 @@ def get_my_wallet_transactions(
 
 @router.post("/mock-topup", response_model=TransactionView)
 def mock_topup_endpoint(
-    amount: float,
+    data: MockTopupRequest,
     db: DbSession,
     current_user=Depends(get_current_user),
 ):
     wallet = wallet_service.get_or_create_wallet(db, current_user)
-    tx = wallet_service.mock_topup(db, wallet, amount)
+    tx = wallet_service.mock_topup(db, wallet, float(data.amount), data.currency)
     return tx
 

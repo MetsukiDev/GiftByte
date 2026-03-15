@@ -10,6 +10,7 @@ class WalletView(BaseModel):
     user_id: str
     balance: Decimal
     currency: str
+    created_at: datetime
     updated_at: datetime
 
     class Config:
@@ -27,4 +28,10 @@ class TransactionView(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class MockTopupRequest(BaseModel):
+    amount: Decimal
+    currency: str
+
 

@@ -69,5 +69,8 @@ class GiftPublicView(BaseModel):
 class FundingSummary(BaseModel):
     gift_id: str
     total_contributed: Decimal
+    target_amount: Optional[Decimal] = None
+    progress: Optional[float] = None  # 0..1 when target_amount is set
     currency: Optional[str] = None
+
 

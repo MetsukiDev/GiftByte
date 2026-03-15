@@ -14,9 +14,14 @@ def get_or_create_wallet(db: Session, user: User) -> Wallet:
     return wallet
 
 
-def mock_topup(db: Session, wallet: Wallet, amount: float) -> Transaction:
+def mock_topup(db: Session, wallet: Wallet, amount: float, currency: str) -> Transaction:
     if amount <= 0:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Amount must be positive")
+    if currency != wallet.currency:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Currency mismatch with wallet",
+        )
     wallet.balance += amount
     tx = Transaction(
         wallet_id=wallet.id,
