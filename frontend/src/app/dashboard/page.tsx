@@ -2,218 +2,221 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import React from "react";
 import { fetchCurrentUser, type User } from "@/lib/auth";
+import Sidebar from "@/components/Sidebar";
+
+// Minimal cyber SVG icons
+const IconGrid = () => (
+  <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+    <rect x="1" y="1" width="6" height="6" rx="1" stroke="currentColor" strokeWidth="1.2" />
+    <rect x="11" y="1" width="6" height="6" rx="1" stroke="currentColor" strokeWidth="1.2" />
+    <rect x="1" y="11" width="6" height="6" rx="1" stroke="currentColor" strokeWidth="1.2" />
+    <rect x="11" y="11" width="6" height="6" rx="1" stroke="currentColor" strokeWidth="1.2" />
+  </svg>
+);
+
+const IconList = () => (
+  <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+    <line x1="5" y1="5" x2="16" y2="5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+    <line x1="5" y1="9" x2="16" y2="9" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+    <line x1="5" y1="13" x2="16" y2="13" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+    <circle cx="2" cy="5" r="1" fill="currentColor" />
+    <circle cx="2" cy="9" r="1" fill="currentColor" />
+    <circle cx="2" cy="13" r="1" fill="currentColor" />
+  </svg>
+);
+
+const IconUsers = () => (
+  <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+    <circle cx="7" cy="6" r="3" stroke="currentColor" strokeWidth="1.2" />
+    <path d="M1 16c0-3.314 2.686-5 6-5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+    <circle cx="13" cy="7" r="2.5" stroke="currentColor" strokeWidth="1.2" />
+    <path d="M13 12c2.5 0 4 1.5 4 4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+  </svg>
+);
+
+const IconWallet = () => (
+  <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+    <rect x="1" y="5" width="16" height="11" rx="1.5" stroke="currentColor" strokeWidth="1.2" />
+    <path d="M1 8h16" stroke="currentColor" strokeWidth="1.2" />
+    <circle cx="13.5" cy="11.5" r="1.5" fill="currentColor" />
+    <path d="M4 3h10" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+  </svg>
+);
+
+const IconPerson = () => (
+  <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+    <circle cx="9" cy="6" r="3.5" stroke="currentColor" strokeWidth="1.2" />
+    <path d="M2 17c0-3.866 3.134-6 7-6s7 2.134 7 6" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+  </svg>
+);
+
+const IconPlus = () => (
+  <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+    <rect x="1" y="1" width="16" height="16" rx="2" stroke="currentColor" strokeWidth="1.2" />
+    <line x1="9" y1="5" x2="9" y2="13" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+    <line x1="5" y1="9" x2="13" y2="9" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+  </svg>
+);
+
+type QuickAction = {
+  label: string;
+  desc: string;
+  href: string;
+  Icon: () => React.ReactElement;
+  accentColor: string;
+  borderColor: string;
+};
+
+const QUICK_ACTIONS: QuickAction[] = [
+  {
+    label: "New Wishlist",
+    desc: "Create a wishlist for your next celebration.",
+    href: "/wishlists/create",
+    Icon: IconPlus,
+    accentColor: "text-cyan-300",
+    borderColor: "hover:border-cyan-400/50",
+  },
+  {
+    label: "My Wishlists",
+    desc: "View and manage all your wishlists.",
+    href: "/wishlists",
+    Icon: IconList,
+    accentColor: "text-indigo-300",
+    borderColor: "hover:border-indigo-400/50",
+  },
+  {
+    label: "Participation",
+    desc: "Gifts you've reserved or contributed to.",
+    href: "/participation",
+    Icon: IconUsers,
+    accentColor: "text-fuchsia-300",
+    borderColor: "hover:border-fuchsia-400/50",
+  },
+  {
+    label: "Wallet",
+    desc: "Check your balance and transactions.",
+    href: "/wallet",
+    Icon: IconWallet,
+    accentColor: "text-emerald-300",
+    borderColor: "hover:border-emerald-400/50",
+  },
+  {
+    label: "Profile",
+    desc: "Update your nickname, avatar, and payout info.",
+    href: "/profile",
+    Icon: IconPerson,
+    accentColor: "text-sky-300",
+    borderColor: "hover:border-sky-400/50",
+  },
+  {
+    label: "Wishlist Grid",
+    desc: "Browse all your wishlists at a glance.",
+    href: "/wishlists",
+    Icon: IconGrid,
+    accentColor: "text-violet-300",
+    borderColor: "hover:border-violet-400/50",
+  },
+];
 
 export default function DashboardPage() {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     let isMounted = true;
-
     async function loadUser() {
       const token =
-        typeof window !== "undefined"
-          ? window.localStorage.getItem("access_token")
-          : null;
-
-      if (!token) {
-        router.replace("/login");
-        return;
-      }
-
+        typeof window !== "undefined" ? window.localStorage.getItem("access_token") : null;
+      if (!token) { router.replace("/login"); return; }
       try {
         const currentUser = await fetchCurrentUser(token);
-        if (isMounted) {
-          setUser(currentUser);
-        }
-      } catch (err) {
-        if (typeof window !== "undefined") {
-          window.localStorage.removeItem("access_token");
-        }
-        if (isMounted) {
-          const message =
-            err instanceof Error
-              ? err.message
-              : "Unable to load your account. Please sign in again.";
-          setError(message);
-          router.replace("/login");
-        }
+        if (isMounted) setUser(currentUser);
+      } catch {
+        if (typeof window !== "undefined") window.localStorage.removeItem("access_token");
+        if (isMounted) router.replace("/login");
       } finally {
-        if (isMounted) {
-          setLoading(false);
-        }
+        if (isMounted) setLoading(false);
       }
     }
-
     loadUser();
-
-    return () => {
-      isMounted = false;
-    };
+    return () => { isMounted = false; };
   }, [router]);
-
-  function handleLogout() {
-    if (typeof window !== "undefined") {
-      window.localStorage.removeItem("access_token");
-    }
-    router.replace("/login");
-  }
 
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#02030a] text-sky-100">
-        <div className="card-holo px-4 py-3 text-sm">
-          Loading your dashboard...
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-[#02030a] text-sky-100">
-        <div className="card-holo w-full max-w-md border border-rose-500/70 bg-rose-950/40 px-4 py-3 text-sm text-rose-100">
-          {error}
-        </div>
+        <div className="card-holo px-5 py-3 text-sm tracking-wide">Initializing console...</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex bg-[#02030a] text-sky-100">
-      <aside className="flex h-screen w-60 flex-col border-r border-sky-900/70 bg-slate-950/70 px-4 py-6 shadow-[8px_0_32px_rgba(15,23,42,0.9)]">
-        <div className="mb-6 px-2 text-lg font-semibold tracking-[0.18em] text-cyan-300">
-          GIFTBYTE
-        </div>
-        <nav className="flex-1 space-y-1 text-xs">
-          <button
-            type="button"
-            className="flex w-full items-center rounded-md bg-cyan-500/20 px-3 py-2 text-left font-semibold text-cyan-200 shadow-[0_0_18px_rgba(34,211,238,0.5)]"
-          >
-            Dashboard
-          </button>
-          <button
-            type="button"
-            onClick={() => router.push("/profile")}
-            className="flex w-full items-center rounded-md px-3 py-2 text-left text-sky-200/70 hover:bg-slate-900/80"
-          >
-            Profile
-          </button>
-          <button
-            type="button"
-            onClick={() => router.push("/wishlists")}
-            className="flex w-full items-center rounded-md px-3 py-2 text-left text-sky-200/70 hover:bg-slate-900/80"
-          >
-            My Wishlists
-          </button>
-          <button
-            type="button"
-            onClick={() => router.push("/wishlists/create")}
-            className="flex w-full items-center rounded-md px-3 py-2 text-left text-sky-200/70 hover:bg-slate-900/80"
-          >
-            Create Wishlist
-          </button>
-          <button
-            type="button"
-            onClick={() => router.push("/participation")}
-            className="flex w-full items-center rounded-md px-3 py-2 text-left text-sky-200/70 hover:bg-slate-900/80"
-          >
-            Participation
-          </button>
-          <button
-            type="button"
-            onClick={() => router.push("/wallet")}
-            className="flex w-full items-center rounded-md px-3 py-2 text-left text-sky-200/70 hover:bg-slate-900/80"
-          >
-            Wallet
-          </button>
-        </nav>
-        <button
-          type="button"
-          onClick={handleLogout}
-          className="mt-4 flex w-full items-center justify-center rounded-md border border-rose-500/60 px-3 py-2 text-xs font-semibold tracking-[0.18em] text-rose-100 hover:bg-rose-950/60"
-        >
-          Logout
-        </button>
-      </aside>
+    <div className="page-shell">
+      <Sidebar active="/dashboard" />
+      <main className="page-main">
+        <div className="page-content">
 
-      <main className="flex-1 px-8 py-10">
-        <h1 className="mb-1 text-2xl font-semibold text-sky-50">
-          {user ? `Welcome back, ${user.nickname}` : "Welcome to GiftByte"}
-        </h1>
-        <p className="mb-6 text-xs text-sky-200/70">
-          Your celebration hub. Create wishlists, share them with friends, and track gifts.
-        </p>
-
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 max-w-3xl mb-8">
-          <button
-            type="button"
-            onClick={() => router.push("/wishlists/create")}
-            className="card-holo card-holo-hover flex flex-col gap-1 border border-cyan-500/40 px-4 py-4 text-left"
-          >
-            <span className="text-xs font-semibold text-cyan-200">New Wishlist</span>
-            <span className="text-[11px] text-sky-200/70">Create a wishlist for your next celebration.</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => router.push("/wishlists")}
-            className="card-holo card-holo-hover flex flex-col gap-1 border border-cyan-500/40 px-4 py-4 text-left"
-          >
-            <span className="text-xs font-semibold text-cyan-200">My Wishlists</span>
-            <span className="text-[11px] text-sky-200/70">View and manage your wishlists.</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => router.push("/participation")}
-            className="card-holo card-holo-hover flex flex-col gap-1 border border-cyan-500/40 px-4 py-4 text-left"
-          >
-            <span className="text-xs font-semibold text-cyan-200">Participation</span>
-            <span className="text-[11px] text-sky-200/70">Gifts you&apos;ve reserved or contributed to.</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => router.push("/wallet")}
-            className="card-holo card-holo-hover flex flex-col gap-1 border border-cyan-500/40 px-4 py-4 text-left"
-          >
-            <span className="text-xs font-semibold text-cyan-200">Wallet</span>
-            <span className="text-[11px] text-sky-200/70">Check your balance and transactions.</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => router.push("/profile")}
-            className="card-holo card-holo-hover flex flex-col gap-1 border border-cyan-500/40 px-4 py-4 text-left"
-          >
-            <span className="text-xs font-semibold text-cyan-200">Profile</span>
-            <span className="text-[11px] text-sky-200/70">Update your nickname, avatar, and payout info.</span>
-          </button>
-        </div>
-
-        {user && (
-          <div className="card-holo max-w-md px-4 py-3 text-sm">
-            <h2 className="mb-2 text-sm font-semibold text-cyan-200">
-              Account
-            </h2>
-            <dl className="space-y-1 text-sky-100/80">
-              <div className="flex justify-between">
-                <dt className="text-[11px] uppercase tracking-[0.22em] text-cyan-300/80">
-                  Email
-                </dt>
-                <dd>{user.email}</dd>
-              </div>
-              <div className="flex justify-between">
-                <dt className="text-[11px] uppercase tracking-[0.22em] text-cyan-300/80">
-                  Nickname
-                </dt>
-                <dd>{user.nickname}</dd>
-              </div>
-            </dl>
+          {/* Header */}
+          <div className="mb-8">
+            <p className="text-[10px] font-semibold tracking-[0.3em] text-cyan-400/55 mb-1">
+              GIFTBYTE // CONTROL CENTER
+            </p>
+            <h1 className="page-title">
+              {user ? `Welcome back, ${user.nickname}` : "Welcome to GiftByte"}
+            </h1>
+            <p className="page-subtitle">
+              Your celebration hub. Create wishlists, share them with friends, and track gifts.
+            </p>
           </div>
-        )}
+
+          {/* Quick action grid */}
+          <div className="mb-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {QUICK_ACTIONS.map((action) => (
+              <button
+                key={action.label + action.href}
+                type="button"
+                onClick={() => router.push(action.href)}
+                className={`card-holo card-holo-hover group flex flex-col gap-3 border border-slate-700/50 px-5 py-4 text-left ${action.borderColor} transition-all`}
+              >
+                <div className={`${action.accentColor} transition-colors`}>
+                  <action.Icon />
+                </div>
+                <div>
+                  <p className="text-xs font-semibold text-sky-100 tracking-wide">{action.label}</p>
+                  <p className="mt-0.5 text-[11px] leading-relaxed text-sky-200/45">{action.desc}</p>
+                </div>
+              </button>
+            ))}
+          </div>
+
+          {/* Account panel */}
+          {user && (
+            <div className="card-holo max-w-sm px-5 py-4">
+              <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.22em] text-cyan-400/55">
+                Account
+              </p>
+              <div className="flex items-center gap-4">
+                <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full border border-cyan-400/40 bg-slate-900 text-sm font-bold text-cyan-200 shadow-[0_0_16px_rgba(34,211,238,0.3)]">
+                  {user.nickname?.[0]?.toUpperCase() ?? "?"}
+                </div>
+                <dl className="space-y-0.5 text-xs min-w-0">
+                  <div className="flex gap-2">
+                    <dt className="text-[10px] uppercase tracking-[0.16em] text-cyan-300/50 w-14 shrink-0">Handle</dt>
+                    <dd className="text-sky-100 truncate">{user.nickname}</dd>
+                  </div>
+                  <div className="flex gap-2">
+                    <dt className="text-[10px] uppercase tracking-[0.16em] text-cyan-300/50 w-14 shrink-0">Email</dt>
+                    <dd className="text-sky-100/70 truncate">{user.email}</dd>
+                  </div>
+                </dl>
+              </div>
+            </div>
+          )}
+        </div>
       </main>
     </div>
   );
 }
-
