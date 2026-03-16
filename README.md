@@ -478,7 +478,7 @@ The long-term goal is to create software that feels immersive, not purely utilit
 Created by **Metsuki**
 
 GitHub profile:
-[https://github.com/PoPLama](https://github.com/PoPLama)
+[https://github.com/PoPLama](https://github.com/MetsukiDev)
 
 Main repository:
 [https://github.com/MetsukiDev/GiftByte](https://github.com/MetsukiDev/GiftByte)
