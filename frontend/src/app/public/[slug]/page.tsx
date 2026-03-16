@@ -38,8 +38,11 @@ export default function PublicWishlistPage() {
   // Contribution amount inputs per gift
   const [amounts, setAmounts] = useState<Record<string, string>>({});
 
-  const authToken =
-    typeof window !== "undefined" ? localStorage.getItem("token") : null;
+  const [authToken, setAuthToken] = useState<string | null>(null);
+
+  useEffect(() => {
+    setAuthToken(localStorage.getItem("access_token"));
+  }, []);
 
   async function loadFunding(giftList: Gift[]) {
     const groupGifts = giftList.filter((g) => g.gift_type === "group");
@@ -82,7 +85,7 @@ export default function PublicWishlistPage() {
     return () => {
       isMounted = false;
     };
-  }, [params]);
+  }, [params, authToken]);
 
   async function handleFollow() {
     if (!authToken) {
@@ -112,7 +115,7 @@ export default function PublicWishlistPage() {
     setActionError((p) => ({ ...p, [gift.id]: "" }));
     setActionLoading((p) => ({ ...p, [gift.id]: true }));
     try {
-      await reserveGift(gift.id, guestNames[gift.id] || undefined);
+      await reserveGift(gift.id, guestNames[gift.id] || undefined, authToken);
       setGifts((prev) =>
         prev.map((g) =>
           g.id === gift.id ? { ...g, status: "reserved" } : g
@@ -138,7 +141,7 @@ export default function PublicWishlistPage() {
     setActionError((p) => ({ ...p, [gift.id]: "" }));
     setActionLoading((p) => ({ ...p, [gift.id]: true }));
     try {
-      await contributeToGift(gift.id, amount, guestNames[gift.id] || undefined);
+      await contributeToGift(gift.id, amount, guestNames[gift.id] || undefined, authToken);
       const summary = await getFundingSummary(gift.id);
       setFundingMap((p) => ({ ...p, [gift.id]: summary }));
       if (summary.progress != null && summary.progress >= 1) {
@@ -346,18 +349,20 @@ export default function PublicWishlistPage() {
                       <div className="mt-3 space-y-2">
                         {gift.gift_type === "single" && !isReserved && (
                           <>
-                            <input
-                              type="text"
-                              placeholder="Your name (optional)"
-                              value={guestNames[gift.id] ?? ""}
-                              onChange={(e) =>
-                                setGuestNames((p) => ({
-                                  ...p,
-                                  [gift.id]: e.target.value,
-                                }))
-                              }
-                              className="input-cyber w-full px-2 py-1 text-[11px]"
-                            />
+                            {!authToken && (
+                              <input
+                                type="text"
+                                placeholder="Your name (optional)"
+                                value={guestNames[gift.id] ?? ""}
+                                onChange={(e) =>
+                                  setGuestNames((p) => ({
+                                    ...p,
+                                    [gift.id]: e.target.value,
+                                  }))
+                                }
+                                className="input-cyber w-full px-2 py-1 text-[11px]"
+                              />
+                            )}
                             <button
                               type="button"
                               disabled={isBusy}
@@ -376,18 +381,20 @@ export default function PublicWishlistPage() {
 
                         {gift.gift_type === "group" && !isFunded && (
                           <>
-                            <input
-                              type="text"
-                              placeholder="Your name (optional)"
-                              value={guestNames[gift.id] ?? ""}
-                              onChange={(e) =>
-                                setGuestNames((p) => ({
-                                  ...p,
-                                  [gift.id]: e.target.value,
-                                }))
-                              }
-                              className="input-cyber w-full px-2 py-1 text-[11px]"
-                            />
+                            {!authToken && (
+                              <input
+                                type="text"
+                                placeholder="Your name (optional)"
+                                value={guestNames[gift.id] ?? ""}
+                                onChange={(e) =>
+                                  setGuestNames((p) => ({
+                                    ...p,
+                                    [gift.id]: e.target.value,
+                                  }))
+                                }
+                                className="input-cyber w-full px-2 py-1 text-[11px]"
+                              />
+                            )}
                             <div className="flex gap-2">
                               <input
                                 type="number"

@@ -50,7 +50,7 @@ export default function Footer() {
           rel="noopener noreferrer"
           className="text-sky-400/40 transition-colors hover:text-cyan-300"
         >
-          PoPLama
+          Metsuki
         </a>
       </p>
     </footer>

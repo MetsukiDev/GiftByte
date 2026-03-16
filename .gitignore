@@ -11,6 +11,9 @@ backend/*.pyd
 
 # Секреты
 backend/.env
+.env.local
+.env.*.local
+
 
 # Логи
 backend/logs/

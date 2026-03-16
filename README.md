@@ -1,166 +1,478 @@
-## GiftByte — Cyber celebration wishlists
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=0:0b1020,100:1b1035&height=220&section=header&text=GiftByte&fontSize=62&fontColor=ffffff&animation=fadeIn&fontAlignY=38" />
+</p>
 
-GiftByte is a fullstack celebration wishlist platform. Users create wishlists for birthdays and events, add gifts, publish a public link, and let friends reserve or contribute to gifts. Owners never see who reserved or contributed — they only see safe statuses and funding progress.
+<p align="center">
+  <b>Cyberpunk pixel-styled wishlist platform</b><br/>
+  Create wishlists • share public celebration pages • reserve gifts secretly • fund group presents together
+</p>
 
-### Tech stack
-
-- **Backend**: FastAPI, SQLAlchemy, PostgreSQL, JWT auth
-- **Frontend**: Next.js App Router, TypeScript, Tailwind CSS
-- **Auth**: Email + password, JWT in backend, access token in `localStorage` on frontend
-- **Realtime (MVP)**: WebSocket rooms per wishlist, server broadcasts gift/wishlist events
+<p align="center">
+  <a href="https://github.com/PoPLama/GiftByte">
+    <img src="https://img.shields.io/badge/status-active-success?style=for-the-badge" />
+  </a>
+  <img src="https://img.shields.io/badge/frontend-Next.js-111827?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/backend-FastAPI-111827?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/database-PostgreSQL-111827?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/style-cyberpunk%20pixel-111827?style=for-the-badge" />
+</p>
 
 ---
 
-## 1. Local development setup
+# 🎁 GiftByte
 
-Clone the repo and make sure you have:
+**GiftByte** is a celebration platform for people who want to organize gifts in a cleaner, smarter and more beautiful way.
 
-- Python 3.11+
-- Node.js 20+
-- PostgreSQL running locally (or a compatible connection string)
+Instead of using chaotic group chats and awkward private messages, GiftByte gives users a shared space where they can:
 
-### Backend (FastAPI)
+- create a wishlist for a birthday or celebration
+- publish it as a public page
+- let friends reserve gifts **without spoilers**
+- allow multiple friends to contribute to expensive presents
+- follow other people’s celebrations
+- track their own participation from one place
 
-From the `backend/` directory:
+The project is built with a **cyberpunk pixel-art inspired interface** so the product feels like more than a plain form-based app.  
+The goal was to make the product feel like a real digital world, not just another CRUD dashboard.
 
-```bash
+---
+
+# ✨ Main Features
+
+## 1. Wishlist creation
+Users can create celebration wishlists with:
+- title
+- description
+- event date
+- gift list
+- publish/share flow
+
+## 2. Public share pages
+Each published wishlist gets a public page that can be opened by other people through a shareable link.
+
+## 3. Secret gift reservations
+Friends can reserve gifts, while the wishlist owner **does not see who reserved what**.  
+This keeps the surprise intact.
+
+## 4. Group gift funding
+For expensive items, multiple friends can contribute together.  
+The public page shows:
+- current amount collected
+- target amount
+- funding progress
+- funded state
+
+## 5. Participation tracking
+Users can track their activity in one place:
+- followed wishlists
+- reserved gifts
+- contributed gifts
+
+## 6. Follow / save wishlist flow
+A logged-in user can save/follow a public wishlist and return to it later from their participation area.
+
+## 7. Cyberpunk pixel UI
+The product uses:
+- layered skyline scenes
+- pixel-inspired vehicles and drones
+- neon accents
+- glass/holographic panels
+- dark atmospheric styling
+
+---
+
+# 🌌 Why this project exists
+
+Gift planning is often more chaotic than it should be.
+
+People usually end up using:
+- random chat messages
+- screenshots
+- private notes
+- duplicated gifts
+- no progress tracking for expensive presents
+
+GiftByte solves this by combining:
+- a product-focused wishlist flow
+- spoiler-safe gift reservation
+- contribution logic
+- a memorable visual identity
+
+The aim is to turn a common social problem into a polished, shareable product.
+
+---
+
+# 🧠 Product Logic
+
+The product is designed around one important rule:
+
+> The owner of the wishlist should not see who reserved or contributed to preserve the surprise.
+
+That means GiftByte separates:
+- what the owner can see
+- what participants can see
+- what gets tracked privately in a participant’s own account
+
+This creates a much better celebration flow than typical wishlist tools.
+
+---
+
+# 🖥 Core User Flow
+
+```text
+Create Wishlist
+      ↓
+Add Gifts
+      ↓
+Publish Wishlist
+      ↓
+Share Public Link
+      ↓
+Friends Visit Public Page
+      ↓
+Reserve Gift / Contribute / Follow Wishlist
+      ↓
+Track Activity in Participation
+🎬 Demo Flow
+
+A typical product demo looks like this:
+
+User creates a wishlist
+
+User adds a few gifts
+
+User publishes the wishlist
+
+User copies the public link
+
+Friend opens /public/{slug}
+
+Friend reserves a single gift
+
+Friend contributes to a group gift
+
+Friend follows the wishlist
+
+Friend sees activity in /participation
+
+🧱 Tech Stack
+Frontend
+
+Next.js
+
+React
+
+TypeScript
+
+TailwindCSS
+
+custom cyberpunk/pixel UI styling
+
+Backend
+
+FastAPI
+
+Python
+
+SQLAlchemy
+
+Pydantic
+
+JWT-based authentication
+
+Database
+
+PostgreSQL
+
+🏗 Architecture
+GiftByte
+│
+├── frontend
+│   ├── auth pages
+│   ├── dashboard
+│   ├── wishlists
+│   ├── public wishlist pages
+│   ├── participation
+│   ├── wallet
+│   └── profile
+│
+├── backend
+│   ├── api
+│   ├── services
+│   ├── models
+│   ├── schemas
+│   ├── auth
+│   └── database
+│
+└── postgresql
+🏗 System Diagram
+flowchart TD
+
+User["User Browser"] --> Frontend["Next.js Frontend"]
+
+Frontend --> AuthPages["Auth Pages"]
+Frontend --> Dashboard["Dashboard"]
+Frontend --> PublicPage["Public Wishlist Page"]
+Frontend --> Participation["Participation"]
+Frontend --> Profile["Profile"]
+Frontend --> Wallet["Wallet"]
+
+Frontend --> API["FastAPI Backend"]
+
+API --> Auth["Auth / JWT"]
+API --> WishlistService["Wishlist Service"]
+API --> GiftService["Gift Service"]
+API --> FollowService["Follow Service"]
+API --> ParticipationService["Participation Logic"]
+
+WishlistService --> DB["PostgreSQL"]
+GiftService --> DB
+FollowService --> DB
+ParticipationService --> DB
+Auth --> DB
+📦 Current Product Scope
+
+At the current stage, GiftByte already supports:
+
+registration
+
+login
+
+dashboard
+
+wishlist creation
+
+gift creation
+
+publishing wishlists
+
+public share pages
+
+anonymous reservation
+
+group contributions
+
+participation tracking
+
+follow/save wishlist flow
+
+profile
+
+wallet UI
+
+legal/support shell pages
+
+stylized cyberpunk pixel presentation
+
+This makes the project a strong MVP / launch-ready demo.
+
+⚙️ Local Setup
+1. Clone the repository
+git clone https://github.com/PoPLama/GiftByte
+cd GiftByte
+2. Backend setup
 cd backend
-
-# 1) Create and activate virtualenv (Git Bash on Windows)
 python -m venv .venv
+Activate virtual environment
+Git Bash
 source .venv/Scripts/activate
-
-# 2) Install dependencies
-pip install --upgrade pip
+PowerShell
+.\.venv\Scripts\Activate.ps1
+Install dependencies
 pip install -r requirements.txt
+Run backend
+python -m uvicorn app.main:app --reload
 
-# 3) Configure environment
-cp .env.example .env
-# then edit .env to point DATABASE_URL to your Postgres
+Backend should run at:
 
-# 4) Run API
-uvicorn app.main:app --reload
-```
+http://localhost:8000
+3. Frontend setup
 
-Backend will be available at:
+Open a second terminal:
 
-- `http://localhost:8000/`
-- `http://localhost:8000/docs` (Swagger UI)
-
-### Frontend (Next.js)
-
-From the `frontend/` directory:
-
-```bash
 cd frontend
-
-# 1) Install dependencies
 npm install
-
-# 2) Configure env
-# Make sure NEXT_PUBLIC_API_URL points at your backend, e.g.:
-# NEXT_PUBLIC_API_URL=http://localhost:8000
-
-# 3) Run dev server
 npm run dev
-```
 
-Frontend will be available at `http://localhost:3000`.
+Frontend should run at:
 
----
+http://localhost:3000
+🔑 Environment Variables
+Backend .env
 
-## 2. Core flows & key routes
+Create a file:
 
-### Auth
+backend/.env
 
-- `/login` — sign in with email + password
-- `/register` — create a new account
+Example:
 
-### Owner dashboard & wishlists
+DATABASE_URL=postgresql://user:password@localhost:5432/giftbyte
+SECRET_KEY=change-this-secret
+ACCESS_TOKEN_EXPIRE_MINUTES=60
+Frontend .env.local
 
-- `/dashboard` — quick overview + entry point into wishlists and wallet
-- `/wishlists` — list of your wishlists
-- `/wishlists/create` — create a new wishlist (title, description, event date, cover image)
-- `/wishlists/[id]` — owner view of a wishlist
-  - add gifts (single or group)
-  - see gift statuses (available, reserved, funding, funded, archived)
-  - see high‑level funding information; no contributor identities
+Create a file:
 
-### Public sharing
+frontend/.env.local
 
-- `/public/[slug]` — public friend view of a wishlist by share slug
-  - read‑only: shows wishlist info + gifts + statuses
-  - safe: no owner data; no contributor / reserver identities
+Example:
 
-### Profile & wallet
+NEXT_PUBLIC_API_URL=http://localhost:8000
+📁 Suggested Repository Structure
+GiftByte/
+├── backend/
+│   ├── app/
+│   ├── .env.example
+│   └── requirements.txt
+├── frontend/
+│   ├── src/
+│   ├── public/
+│   └── package.json
+├── assets/
+├── README.md
+└── .gitignore
+🧪 Manual QA Checklist
 
-- `/profile` — current user info (email, nickname, avatar URL, payout method) with a minimal edit form
-- `/wallet` — wallet overview and transaction list (+ mock top‑up for local testing)
-- `/participation` — gifts you have reserved or contributed to across all wishlists
+Before shipping or deploying, check the following:
 
----
+Auth
 
-## 3. Environment variables
+register works
 
-### Backend (`backend/.env`)
+login works
 
-See `backend/.env.example` for defaults. Common keys:
+authenticated pages load correctly
 
-- `DATABASE_URL` — PostgreSQL connection string
-- `JWT_SECRET_KEY`, `JWT_ALGORITHM`, `ACCESS_TOKEN_EXPIRES_MINUTES`
-- `CORS_ORIGINS` — usually includes `http://localhost:3000`
+Wishlist owner flow
 
-### Frontend (`frontend/.env.local`)
+create wishlist
 
-- `NEXT_PUBLIC_API_URL` — base URL for the FastAPI backend, e.g.
-  - `NEXT_PUBLIC_API_URL=http://localhost:8000`
+add gifts
 
----
+publish wishlist
 
-## 4. Demo flow (owner + friend)
+copy share link
 
-**Owner side**
+delete wishlist
 
-1. Register and login.
-2. Go to `/wishlists/create` and create a wishlist.
-3. Open it from `/wishlists` and add gifts (single and group).
-4. Click **Publish & Share** on the wishlist detail page to get a public share link.
-5. Copy the share link and open it in a private/incognito window to simulate a friend.
+Public flow
 
-**Friend side**
+open public page
 
-1. Open `/public/{public_slug}` — no login required.
-2. Browse gifts; see which are available, reserved, or funded.
-3. Reserve a single gift (optionally enter your name).
-4. Contribute to a group gift by entering an amount.
+reserve single gift
 
-**Participation**
+contribute to group gift
 
-- After reserving or contributing, go to `/participation` to see your activity across all wishlists.
+follow wishlist
 
-**Wallet**
+guest login CTA works
 
-- Go to `/wallet` to see your balance and transaction history.
-- Use the mock top-up form to add funds for local testing.
+Participation
 
-**Delete wishlist**
+followed wishlists appear
 
-- On any wishlist detail page, click **Delete wishlist** and confirm.
-- The wishlist is archived and removed from your active list.
-- The public share link becomes inaccessible.
+reserved items appear
 
----
+contributed items appear
 
-## 5. Project structure (high level)
+Visual polish
 
-- `backend/`
-  - `app/api/` — FastAPI routers (`auth`, `users`, `wishlists`, `gifts`, `wallet`, `public`, `ws`)
-  - `app/schemas/` — Pydantic models (owner‑safe and public‑safe views)
-  - `app/services/` — business logic (wishlists, gifts, wallet, funding)
-  - `app/models/` — SQLAlchemy models
-- `frontend/`
-  - `src/app/` — Next.js App Router pages (`login`, `register`, `dashboard`, `wishlists`, `public`, `profile`, `wallet`)
-  - `src/lib/` — small API helpers (`auth`, `wishlists`, `gifts`, `public`, `user`, `wallet`)
+auth scene renders correctly
 
-This repository is meant to be easy to read and extend — use existing modules as patterns when adding new features.
+sidebar collapse works
 
+no invisible text
+
+footer renders correctly
+
+no broken empty states
+
+🚀 Roadmap
+
+The current version is focused on a polished MVP / showcase release.
+
+Planned next steps include:
+
+real-time updates
+
+email support and notifications
+
+payment integration
+
+stronger mobile experience
+
+production-grade infrastructure
+
+public creator pages
+
+real support/contact operations
+
+🔐 Privacy / Product Rules
+
+GiftByte is designed around spoiler-safe gifting.
+
+Key rules:
+
+wishlist owner should not see who reserved a gift
+
+wishlist owner should not see who contributed money
+
+participant activity is visible to the participant in their own account
+
+public interactions are separated from owner visibility where needed
+
+💡 Design Direction
+
+GiftByte is intentionally not a generic dashboard app.
+
+The visual direction combines:
+
+cyberpunk UI
+
+pixel world atmosphere
+
+dark futuristic surfaces
+
+glowing progress states
+
+layered animated scenes
+
+The long-term goal is to create software that feels immersive, not purely utilitarian.
+
+👾 Author
+
+Created by PoPLama
+
+GitHub profile:
+https://github.com/PoPLama
+
+Main repository:
+https://github.com/PoPLama/GiftByte
+
+🤝 Support the Project
+
+GiftByte is an evolving independent project.
+
+Support links can later be connected through:
+
+Boosty
+
+CloudTips
+
+At the moment, the best support is:
+
+starring the repository
+
+following the project
+
+sharing feedback
+
+testing the app after launch
+
+⭐ Star the Repository
+
+If you like the idea behind GiftByte, consider leaving a star.
+
+It helps the project get discovered and supports future improvements.
+
+<p align="center"> <img src="https://capsule-render.vercel.app/api?type=waving&color=0:1b1035,100:0b1020&height=120&section=footer"/> </p> ```
