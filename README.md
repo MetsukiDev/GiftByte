@@ -1,3 +1,4 @@
+
 <p align="center">
   <img src="https://capsule-render.vercel.app/api?type=waving&color=0:0b1020,100:1b1035&height=220&section=header&text=GiftByte&fontSize=62&fontColor=ffffff&animation=fadeIn&fontAlignY=38" />
 </p>
@@ -8,7 +9,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/PoPLama/GiftByte">
+  <a href="https://github.com/MetsukiDev/GiftByte">
     <img src="https://img.shields.io/badge/status-active-success?style=for-the-badge" />
   </a>
   <img src="https://img.shields.io/badge/frontend-Next.js-111827?style=for-the-badge" />
@@ -21,7 +22,7 @@
 
 # 🎁 GiftByte
 
-**GiftByte** is a celebration platform for people who want to organize gifts in a cleaner, smarter and more beautiful way.
+**GiftByte** is a celebration platform for people who want to organize gifts in a cleaner, smarter, and more beautiful way.
 
 Instead of using chaotic group chats and awkward private messages, GiftByte gives users a shared space where they can:
 
@@ -40,6 +41,7 @@ The goal was to make the product feel like a real digital world, not just anothe
 # ✨ Main Features
 
 ## 1. Wishlist creation
+
 Users can create celebration wishlists with:
 - title
 - description
@@ -48,13 +50,16 @@ Users can create celebration wishlists with:
 - publish/share flow
 
 ## 2. Public share pages
+
 Each published wishlist gets a public page that can be opened by other people through a shareable link.
 
 ## 3. Secret gift reservations
+
 Friends can reserve gifts, while the wishlist owner **does not see who reserved what**.  
 This keeps the surprise intact.
 
 ## 4. Group gift funding
+
 For expensive items, multiple friends can contribute together.  
 The public page shows:
 - current amount collected
@@ -63,15 +68,18 @@ The public page shows:
 - funded state
 
 ## 5. Participation tracking
+
 Users can track their activity in one place:
 - followed wishlists
 - reserved gifts
 - contributed gifts
 
 ## 6. Follow / save wishlist flow
+
 A logged-in user can save/follow a public wishlist and return to it later from their participation area.
 
 ## 7. Cyberpunk pixel UI
+
 The product uses:
 - layered skyline scenes
 - pixel-inspired vehicles and drones
@@ -119,7 +127,7 @@ This creates a much better celebration flow than typical wishlist tools.
 
 # 🖥 Core User Flow
 
-
+```text
 Create Wishlist
       ↓
 Add Gifts
@@ -133,58 +141,53 @@ Friends Visit Public Page
 Reserve Gift / Contribute / Follow Wishlist
       ↓
 Track Activity in Participation
-🎬 Demo Flow
+````
+
+---
+
+# 🎬 Demo Flow
 
 A typical product demo looks like this:
 
-User creates a wishlist
+1. User creates a wishlist
+2. User adds a few gifts
+3. User publishes the wishlist
+4. User copies the public link
+5. Friend opens `/public/{slug}`
+6. Friend reserves a single gift
+7. Friend contributes to a group gift
+8. Friend follows the wishlist
+9. Friend sees activity in `/participation`
 
-User adds a few gifts
+---
 
-User publishes the wishlist
+# 🧱 Tech Stack
 
-User copies the public link
+## Frontend
 
-Friend opens /public/{slug}
+* Next.js
+* React
+* TypeScript
+* TailwindCSS
+* custom cyberpunk/pixel UI styling
 
-Friend reserves a single gift
+## Backend
 
-Friend contributes to a group gift
+* FastAPI
+* Python
+* SQLAlchemy
+* Pydantic
+* JWT-based authentication
 
-Friend follows the wishlist
+## Database
 
-Friend sees activity in /participation
+* PostgreSQL
 
-🧱 Tech Stack
-Frontend
+---
 
-Next.js
+# 🏗 Architecture
 
-React
-
-TypeScript
-
-TailwindCSS
-
-custom cyberpunk/pixel UI styling
-
-Backend
-
-FastAPI
-
-Python
-
-SQLAlchemy
-
-Pydantic
-
-JWT-based authentication
-
-Database
-
-PostgreSQL
-
-🏗 Architecture
+```text
 GiftByte
 │
 ├── frontend
@@ -205,7 +208,13 @@ GiftByte
 │   └── database
 │
 └── postgresql
-🏗 System Diagram
+```
+
+---
+
+# 🏗 System Diagram
+
+```mermaid
 flowchart TD
 
 User["User Browser"] --> Frontend["Next.js Frontend"]
@@ -230,95 +239,137 @@ GiftService --> DB
 FollowService --> DB
 ParticipationService --> DB
 Auth --> DB
-📦 Current Product Scope
+```
+
+---
+
+# 📦 Current Product Scope
 
 At the current stage, GiftByte already supports:
 
-registration
+* registration
+* login
+* dashboard
+* wishlist creation
+* gift creation
+* publishing wishlists
+* public share pages
+* anonymous reservation
+* group contributions
+* participation tracking
+* follow/save wishlist flow
+* profile
+* wallet UI
+* legal/support shell pages
+* stylized cyberpunk pixel presentation
 
-login
+This makes the project a strong **MVP / launch-ready demo**.
 
-dashboard
+---
 
-wishlist creation
+# ⚙️ Local Setup
 
-gift creation
+## 1. Clone the repository
 
-publishing wishlists
-
-public share pages
-
-anonymous reservation
-
-group contributions
-
-participation tracking
-
-follow/save wishlist flow
-
-profile
-
-wallet UI
-
-legal/support shell pages
-
-stylized cyberpunk pixel presentation
-
-This makes the project a strong MVP / launch-ready demo.
-
-⚙️ Local Setup
-1. Clone the repository
-git clone https://github.com/PoPLama/GiftByte
+```bash
+git clone https://github.com/MetsukiDev/GiftByte
 cd GiftByte
-2. Backend setup
+```
+
+## 2. Backend setup
+
+```bash
 cd backend
 python -m venv .venv
-Activate virtual environment
-Git Bash
+```
+
+### Activate virtual environment
+
+#### Git Bash
+
+```bash
 source .venv/Scripts/activate
-PowerShell
+```
+
+#### PowerShell
+
+```powershell
 .\.venv\Scripts\Activate.ps1
-Install dependencies
+```
+
+### Install dependencies
+
+```bash
 pip install -r requirements.txt
-Run backend
+```
+
+### Run backend
+
+```bash
 python -m uvicorn app.main:app --reload
+```
 
 Backend should run at:
 
+```text
 http://localhost:8000
-3. Frontend setup
+```
+
+## 3. Frontend setup
 
 Open a second terminal:
 
+```bash
 cd frontend
 npm install
 npm run dev
+```
 
 Frontend should run at:
 
+```text
 http://localhost:3000
-🔑 Environment Variables
-Backend .env
+```
+
+---
+
+# 🔑 Environment Variables
+
+## Backend `.env`
 
 Create a file:
 
+```text
 backend/.env
+```
 
 Example:
 
+```env
 DATABASE_URL=postgresql://user:password@localhost:5432/giftbyte
 SECRET_KEY=change-this-secret
 ACCESS_TOKEN_EXPIRE_MINUTES=60
-Frontend .env.local
+```
+
+## Frontend `.env.local`
 
 Create a file:
 
+```text
 frontend/.env.local
+```
 
 Example:
 
+```env
 NEXT_PUBLIC_API_URL=http://localhost:8000
-📁 Suggested Repository Structure
+```
+
+---
+
+# 📁 Suggested Repository Structure
+
+```text
 GiftByte/
 ├── backend/
 │   ├── app/
@@ -331,148 +382,134 @@ GiftByte/
 ├── assets/
 ├── README.md
 └── .gitignore
-🧪 Manual QA Checklist
+```
+
+---
+
+# 🧪 Manual QA Checklist
 
 Before shipping or deploying, check the following:
 
-Auth
+## Auth
 
-register works
+* register works
+* login works
+* authenticated pages load correctly
 
-login works
+## Wishlist owner flow
 
-authenticated pages load correctly
+* create wishlist
+* add gifts
+* publish wishlist
+* copy share link
+* delete wishlist
 
-Wishlist owner flow
+## Public flow
 
-create wishlist
+* open public page
+* reserve single gift
+* contribute to group gift
+* follow wishlist
+* guest login CTA works
 
-add gifts
+## Participation
 
-publish wishlist
+* followed wishlists appear
+* reserved items appear
+* contributed items appear
 
-copy share link
+## Visual polish
 
-delete wishlist
+* auth scene renders correctly
+* sidebar collapse works
+* no invisible text
+* footer renders correctly
+* no broken empty states
 
-Public flow
+---
 
-open public page
-
-reserve single gift
-
-contribute to group gift
-
-follow wishlist
-
-guest login CTA works
-
-Participation
-
-followed wishlists appear
-
-reserved items appear
-
-contributed items appear
-
-Visual polish
-
-auth scene renders correctly
-
-sidebar collapse works
-
-no invisible text
-
-footer renders correctly
-
-no broken empty states
-
-🚀 Roadmap
+# 🚀 Roadmap
 
 The current version is focused on a polished MVP / showcase release.
 
 Planned next steps include:
 
-real-time updates
+* real-time updates
+* email support and notifications
+* payment integration
+* stronger mobile experience
+* production-grade infrastructure
+* public creator pages
+* real support/contact operations
 
-email support and notifications
+---
 
-payment integration
-
-stronger mobile experience
-
-production-grade infrastructure
-
-public creator pages
-
-real support/contact operations
-
-🔐 Privacy / Product Rules
+# 🔐 Privacy / Product Rules
 
 GiftByte is designed around spoiler-safe gifting.
 
 Key rules:
 
-wishlist owner should not see who reserved a gift
+* wishlist owner should not see who reserved a gift
+* wishlist owner should not see who contributed money
+* participant activity is visible to the participant in their own account
+* public interactions are separated from owner visibility where needed
 
-wishlist owner should not see who contributed money
+---
 
-participant activity is visible to the participant in their own account
-
-public interactions are separated from owner visibility where needed
-
-💡 Design Direction
+# 💡 Design Direction
 
 GiftByte is intentionally not a generic dashboard app.
 
 The visual direction combines:
 
-cyberpunk UI
-
-pixel world atmosphere
-
-dark futuristic surfaces
-
-glowing progress states
-
-layered animated scenes
+* cyberpunk UI
+* pixel world atmosphere
+* dark futuristic surfaces
+* glowing progress states
+* layered animated scenes
 
 The long-term goal is to create software that feels immersive, not purely utilitarian.
 
-👾 Author
+---
 
-Created by PoPLama
+# 👾 Author
+
+Created by **Metsuki**
 
 GitHub profile:
-https://github.com/PoPLama
+[https://github.com/PoPLama](https://github.com/PoPLama)
 
 Main repository:
-https://github.com/PoPLama/GiftByte
+[https://github.com/MetsukiDev/GiftByte](https://github.com/MetsukiDev/GiftByte)
 
-🤝 Support the Project
+---
+
+# 🤝 Support the Project
 
 GiftByte is an evolving independent project.
 
 Support links can later be connected through:
 
-Boosty
-
-CloudTips
+* Boosty
+* CloudTips
 
 At the moment, the best support is:
 
-starring the repository
+* starring the repository
+* following the project
+* sharing feedback
+* testing the app after launch
 
-following the project
+---
 
-sharing feedback
-
-testing the app after launch
-
-⭐ Star the Repository
+# ⭐ Star the Repository
 
 If you like the idea behind GiftByte, consider leaving a star.
 
 It helps the project get discovered and supports future improvements.
 
-<p align="center"> <img src="https://capsule-render.vercel.app/api?type=waving&color=0:1b1035,100:0b1020&height=120&section=footer"/> </p> ```
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=0:1b1035,100:0b1020&height=120&section=footer"/>
+</p>
+```
