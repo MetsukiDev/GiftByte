@@ -119,7 +119,7 @@ This creates a much better celebration flow than typical wishlist tools.
 
 # 🖥 Core User Flow
 
-```text
+
 Create Wishlist
       ↓
 Add Gifts
